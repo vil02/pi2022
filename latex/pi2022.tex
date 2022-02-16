@@ -1,0 +1,103 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usefonttheme[onlymath]{serif}
+\newcommand*{\theorembreak}{\usebeamertemplate{theorem end}\framebreak\usebeamertemplate{theorem begin}}
+\usepackage[ddmmyyyy,hhmmss]{datetime}
+\renewcommand{\dateseparator}{.}
+\usepackage{animate}
+\usepackage{seqsplit}
+\usepackage{fontawesome}
+\usepackage{import}
+\usepackage{animate}
+\usepackage[noadjust]{cite}
+\usepackage{hyperref}
+\usepackage{etoolbox}
+\patchcmd{\theorem}{Theorem}{Twierdzenie}{}{}
+%\patchcmd{\corollary}{Corollary}{Wniosek}{}{}
+\patchcmd{\lemma}{Lemma}{Lemat}{}{}
+%\patchcmd{\proposition}{Proposition}{Stwierdzenie}{}{}
+%\patchcmd{\axiom}{Axiom}{Aksjomat}{}{}
+\patchcmd{\example}{Example}{Przykład}{}{}
+\patchcmd{\definition}{Definition}{Definicja}{}{}
+%\patchcmd{\remark}{Remark}{Uwaga}{}{}
+
+\newcommand{\enumsymbol}{$\triangleright$}
+\newcommand{\enumsymbolsec}{$\circ$}
+
+
+\newcommand{\colora}[1]{{\color{red}{#1}}}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+\renewcommand{\gcd}[2]{\mathtt{NWD}\paren{#1, #2}}
+
+\newcommand{\convto}[2]{\xrightarrow[#2]{#1}}
+\newcommand{\TODO}[1]{(\footnote{\texttt{TODO:} #1}!)}
+
+\newcommand{\myEmail}{vil02@o2.pl}
+\newcommand{\myLinkedinLink}{https://www.linkedin.com/in/piotr-idzik-34b572151/}
+\newcommand{\myGithubLink}{https://github.com/vil02/}
+
+\newcommand{\myLinkedin}{\href{\myLinkedinLink}{\faLinkedinSquare}}
+\newcommand{\myGithub}{\href{\myGithubLink}{\faGithubSquare}}
+
+\renewcommand{\GenericWarning}[2]{\GenericError{#1}{#2}{}{This warning has been turned into a fatal error.}}
+
+\let\oldsqrt\sqrt{}
+\def\sqrt{\mathpalette\DHLhksqrt}
+\def\DHLhksqrt#1#2{%
+\setbox0=\hbox{$#1\oldsqrt{#2\,}$}\dimen0=\ht0
+\advance\dimen0-0.2\ht0 % chktex 8
+\setbox2=\hbox{\vrule height\ht0 depth -\dimen0}%
+{\box0\lower0.4pt\box2}}
+
+\newcommand{\labelOnSlide}[2]{\label<#1>{#2}}
+\definecolor{colorOfDefinition}{RGB}{0, 70, 230}
+\newcommand{\define}[1]{\textcolor{colorOfDefinition}{\textit{#1}}}
+\newcommand{\paren}[1]{\!\left(#1 \right)}
+\newcommand{\abs}[1]{\left| #1 \right|}
+\newcommand{\email}[1]{\href{mailto: #1}{\texttt{#1}}}
+\newcommand{\link}[1]{\href{#1}{\texttt{#1}}}
+\newcommand{\goToProof}[1]{\hfill\hyperlink{#1}{\normalfont\faArrowCircleRight}}
+\renewcommand*\footnoterule{}
+
+\setbeamertemplate{theorems}[numbered]
+
+\input{paths_and_names.tex}
+
+\usetheme{Montpellier}
+\author{\texorpdfstring{\href{\myLinkedinLink}{dr Piotr Idzik} \\ \email{\myEmail}}{Piotr Idzik}}
+\title{Problemy optymalizacyjne i symulowane wyżarzanie}
+\date{Karlsruhe, Katowice, 14.03.2022}
+\setbeamerfont{page number in head/foot}{size=\large, shape=\ttfamily\color{black}}
+
+\setbeamertemplate{navigation symbols}
+{%
+  \vbox{%
+  \hbox{\insertbackfindforwardnavigationsymbol}}%
+}
+
+\expandafter\def\expandafter\insertshorttitle\expandafter{%
+  \insertshorttitle\hfill%
+  \texttt{\insertframenumber}}
+
+\begin{document}
+\begin{frame}[plain]
+\maketitle
+
+\myLinkedin{}
+\myGithub{}
+\hfill \textcolor[rgb]{0.85,0.85,0.85}{\texttt{\tiny{ver. \today\ \currenttime\/}}}
+\end{frame}
+
+
+\end{document}

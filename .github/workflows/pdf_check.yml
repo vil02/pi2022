@@ -1,0 +1,30 @@
+---
+name: pdf_check
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'generated/**'
+      - '.github/workflows/qpdf_check.yml'
+
+jobs:
+  run_qpdf:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install qpdf
+        run: |
+          sudo apt-get install qpdf
+      - name: Check with qpdf
+        shell: bash
+        run: |
+          cd "$(./get_output_folder.sh)"
+          for cur_file in *.pdf; do qpdf --check $cur_file; done
+      - name: Verify checksum data
+        run: ./verify_checksum_data.sh
+...

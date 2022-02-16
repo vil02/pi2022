@@ -24,10 +24,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
       - name: Set up Python ${{matrix.python-version}}
         uses: actions/setup-python@v2
         with:
           python-version: ${{matrix.python-version}}
+
       - name: Install dependencies
         shell: bash
         run: |
@@ -35,15 +37,19 @@ jobs:
           python -m pip install flake8 pylint pytest
           python -m pip install matplotlib
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
       - name: Display pylint version
         run: pylint --version
+
       - name: Display flake8 version
         run: flake8 --version
+
       - name: Run linter
         shell: bash
         run: |
           cd python/
           ./check_all_python_scripts.sh
+
       - name: Test with pytest
         run: |
           pytest

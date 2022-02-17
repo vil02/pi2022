@@ -16,9 +16,8 @@ def get_project_root_dir():
     """
     this_file_path = pathlib.Path(__file__)
     assert _proj_core_name() in str(this_file_path)
-    for _ in this_file_path.parents:
-        if _.name == _proj_core_name():
-            return _
+    return next(
+        _ for _ in this_file_path.parents if _.name == _proj_core_name())
 
 
 def read_paths_and_names():

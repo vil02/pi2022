@@ -35,4 +35,8 @@ def test_get_config_parameter():
 
 
 def test_get_config_parameter_tmp_data_folder():
+    """
+    checks if cf.get_config_parameter('tmpDataFolder')
+    returns a pathlib.Path object
+    """
     assert isinstance(cf.get_config_parameter('tmpDataFolder'), pathlib.Path)

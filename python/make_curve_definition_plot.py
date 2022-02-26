@@ -1,12 +1,18 @@
-import curve
+"""generates pdf and tex file for the curve representation example"""
+
 import math
 import matplotlib.pyplot as plt
 import matplotlib
 import scipy.interpolate
 import numpy
 
+import curve
+
 
 def mark_angles(in_curve):
+    """
+    marks the angles of the given in_curve
+    """
     total_angle = 0
     cur_ax = plt.gca()
     for (cur_pos, cur_angle) in zip(in_curve.point_list, in_curve.angle_list):
@@ -31,15 +37,16 @@ ANGLE_DEG_LIST = [15, 50, -60, -60, -60, 5, 30]
 EXAMPLE_CURVE = curve.Curve([math.radians(_) for _ in ANGLE_DEG_LIST], 1)
 
 RAW_DATA = numpy.array([EXAMPLE_CURVE.x_list, EXAMPLE_CURVE.y_list]).T
-interpolator = scipy.interpolate.interp1d(
+INTERTPOLATOR = scipy.interpolate.interp1d(
     numpy.linspace(0, 1, len(EXAMPLE_CURVE.y_list)),
     RAW_DATA, axis=0, kind='cubic')
-SMOOTH_DATA = interpolator(numpy.linspace(0, 1, 100))
+SMOOTH_DATA = INTERTPOLATOR(numpy.linspace(0, 1, 100))
 
 mark_angles(EXAMPLE_CURVE)
 plt.plot(SMOOTH_DATA[:, 0], SMOOTH_DATA[:, 1], linewidth=3)
 plt.plot(EXAMPLE_CURVE.x_list, EXAMPLE_CURVE.y_list, linewidth=3)
-plt.plot(EXAMPLE_CURVE.x_list, EXAMPLE_CURVE.y_list, linestyle='None', marker='o')
+plt.plot(
+    EXAMPLE_CURVE.x_list, EXAMPLE_CURVE.y_list, linestyle='None', marker='o')
 
 
 plt.gca().set_aspect('equal', adjustable='box')

@@ -37,8 +37,10 @@ class Curve:
 
     @property
     def angle_list(self):
+        """returns the angle_list"""
         return self._angle_list
 
     @property
     def segment_size(self):
+        """returns the segment_size"""
         return self._segment_size

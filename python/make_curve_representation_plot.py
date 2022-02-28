@@ -7,7 +7,7 @@ import scipy.interpolate
 import numpy
 
 import curve
-import project_config as pc
+import output_paths as op
 
 
 def mark_angles(in_curve):
@@ -36,31 +36,9 @@ def mark_angles(in_curve):
         cur_ax.add_patch(cur_angle_marker)
 
 
-def get_result_dir_name():
-    """returns the dir name storing the pdf files"""
-    return 'curve_representation_example'
-
-
-def get_file_name(in_num):
-    """returns the name of the pdf file of given number"""
-    return f'curve_representation_example_{in_num}.pdf'
-
-
-def get_short_pdf_path(in_num):
-    """
-    returns the result pdf file path relative to the main output path
-    """
-    return get_pdf_file_path(in_num).relative_to(
-        pc.get_config_parameter('tmpDataFolder'))
-
-
-def get_pdf_file_path(in_num):
-    """
-    returns the path of the ouput file for the given number
-    """
-    pdf_dir = pc.get_config_parameter('tmpDataFolder')/get_result_dir_name()
-    pdf_dir.mkdir(parents=True, exist_ok=True)
-    return pdf_dir/get_file_name(in_num)
+def _get_output_paths():
+    return op.OutputPaths(
+        'curve_representation_example', 'curveRepresentationExampleTex')
 
 
 def get_smooth_data(in_curve):
@@ -82,7 +60,7 @@ def plot_all(in_angle_deg_list, save_to_pdf=False, lim_data=None):
     def call_save_fig(in_num):
         if save_to_pdf:
             plt.savefig(
-                get_pdf_file_path(in_num),
+                _get_output_paths().get_pdf_file_path(in_num),
                 bbox_inches='tight', pad_inches=0.01)
     plt.gca().set_aspect('equal', adjustable='box')
     plt.axis('off')
@@ -137,7 +115,7 @@ for _ in range(MAX_NUM):
     cur_str = \
         f'        \\onslide<{_to_on_slide_num(_+1, MAX_NUM)}>' \
         r'\centerline{\includegraphics[width=\textwidth]{' \
-        f'{get_short_pdf_path(_)}' \
+        f'{_get_output_paths().get_short_pdf_path(_)}' \
         '}}\n'
     TEX_STR += cur_str
 TEX_STR += \
@@ -149,9 +127,7 @@ TEX_STR += \
     ', '.join(str(_)+'^{\\circ}' for _ in ANGLE_DEG_LIST) + ')$$}\n'
 TEX_STR += '\\end{frame}\n'
 
-TEX_FILE_PATH = \
-    pc.get_config_parameter('tmpDataFolder') / \
-    pc.get_config_parameter('curveRepresentationExampleTex')
+TEX_FILE_PATH = _get_output_paths().get_tex_file_path()
 with open(
         TEX_FILE_PATH, 'w', encoding='utf-8') as tex_file:
     tex_file.write(TEX_STR)

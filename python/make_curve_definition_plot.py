@@ -36,14 +36,31 @@ def mark_angles(in_curve):
         cur_ax.add_patch(cur_angle_marker)
 
 
+def get_result_dir_name():
+    """returns the dir name storing the pdf files"""
+    return 'curve_representation_example'
+
+
+def get_file_name(in_num):
+    """returns the name of the pdf file of given number"""
+    return f'curve_representation_example_{in_num}.pdf'
+
+
+def get_short_pdf_path(in_num):
+    """
+    returns the result pdf file path relative to the main output path
+    """
+    return get_pdf_file_path(in_num).relative_to(
+        pc.get_config_parameter('tmpDataFolder'))
+
+
 def get_pdf_file_path(in_num):
     """
     returns the path of the ouput file for the given number
     """
-    pdf_dir = pc.get_config_parameter(
-        'tmpDataFolder')/'curve_representation_example'
+    pdf_dir = pc.get_config_parameter('tmpDataFolder')/get_result_dir_name()
     pdf_dir.mkdir(parents=True, exist_ok=True)
-    return pdf_dir/f'curve_representation_example_{in_num}.pdf'
+    return pdf_dir/get_file_name(in_num)
 
 
 def get_smooth_data(in_curve):
@@ -96,6 +113,45 @@ def plot_all(in_angle_deg_list, save_to_pdf=False, lim_data=None):
     return [xlim_data, ylim_data]
 
 
-ANGLE_DEG_LIST = [15, 50, -60, -60, -60, 10, 30]
+ANGLE_DEG_LIST = [10, -20, 115, 50, -60, -60, -60, 10, 30, -30, 20, -45, -30]
 LIM_DATA = plot_all(ANGLE_DEG_LIST, False)
 plot_all(ANGLE_DEG_LIST, True, LIM_DATA)
+
+
+def _to_on_slide_num(in_num, max_num):
+    res = str(in_num)
+    if in_num == max_num:
+        res += '-'
+    return res
+
+
+TEX_STR = \
+    '\\begin{frame}\n' \
+    '  \\begin{center}\n' \
+    '    \\begin{overprint}\n'
+
+MAX_NUM = 3
+
+
+for _ in range(MAX_NUM):
+    cur_str = \
+        f'        \\onslide<{_to_on_slide_num(_+1, MAX_NUM)}>' \
+        r'\centerline{\includegraphics[width=\textwidth]{' \
+        f'{get_short_pdf_path(_)}' \
+        '}}\n'
+    TEX_STR += cur_str
+TEX_STR += \
+    '    \\end{overprint}\n' \
+    '  \\end{center}\n'
+
+TEX_STR += \
+    '\\uncover<4->{$$(' + \
+    ', '.join(str(_)+'^{\\circ}' for _ in ANGLE_DEG_LIST) + ')$$}\n'
+TEX_STR += '\\end{frame}\n'
+
+TEX_FILE_PATH = \
+    pc.get_config_parameter('tmpDataFolder') / \
+    pc.get_config_parameter('curveRepresentationExampleTex')
+with open(
+        TEX_FILE_PATH, 'w', encoding='utf-8') as tex_file:
+    tex_file.write(TEX_STR)

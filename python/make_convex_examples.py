@@ -85,11 +85,11 @@ plt.close()
 
 _init_figure()
 for _ in CONVEX_SHAPES:
-    plot_shape(_, edgecolor='black', facecolor=[0.3, 1, 0.4])
+    plot_shape(_, facecolor='lightgreen', edgecolor='green')
 
 
 for _ in NONCONVEX_SHAPES:
-    plot_shape(_, edgecolor='black', facecolor=[1, 0.3, 0.4])
+    plot_shape(_, facecolor='salmon', edgecolor='red')
 
 _mark_segment([1.65, 2.7], [3, 1.8])
 _mark_segment([-1.58, -0.36], [-2.30, -1.75])

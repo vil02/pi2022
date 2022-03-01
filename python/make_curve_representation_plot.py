@@ -77,11 +77,13 @@ def plot_all(in_angle_deg_list, save_to_pdf=False, lim_data=None):
     call_save_fig(0)
 
     plt.plot(
-        example_curve.x_list, example_curve.y_list, linewidth=3, zorder=40)
+        example_curve.x_list, example_curve.y_list, linewidth=3, zorder=40,
+        color='orange')
     plt.plot(
         example_curve.x_list, example_curve.y_list,
         linestyle='None', marker='o',
-        zorder=50)
+        zorder=50,
+        color='olive')
     call_save_fig(1)
     mark_angles(example_curve)
     call_save_fig(2)

@@ -5,6 +5,7 @@ import matplotlib.patches
 import matplotlib.pyplot as plt
 import numpy
 import scipy.interpolate
+import scipy.spatial
 
 import output_paths as op
 import curve
@@ -54,6 +55,9 @@ def _set_limits():
 
 
 def find_last_inside(in_set, in_curve):
+    """
+    returns the index of the last point/node of the in_curve inside in_set
+    """
     res = None
     for (cur_num, cur_pos) in enumerate(in_curve.point_list):
         if in_set.contains_point(cur_pos):

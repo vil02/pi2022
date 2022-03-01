@@ -1,3 +1,5 @@
+"""prepares all TeX data for the examples of convex and non-convex sets"""
+
 import matplotlib.patches
 import matplotlib.pyplot as plt
 import numpy
@@ -36,6 +38,7 @@ def _get_raw_nonconvex_shape_b():
 
 
 def plot_shape(xy_data, **kwargs):
+    """plots given polygon"""
     plt.gca().add_patch(matplotlib.patches.Polygon(xy_data, **kwargs))
 
 
@@ -43,6 +46,7 @@ def _init_figure():
     plt.figure()
     plt.gca().set_aspect('equal', adjustable='box')
     plt.axis('off')
+
 
 def _set_limits():
     plt.gca().set_xlim([-4.5, 3.5])
@@ -59,6 +63,7 @@ def _call_save_fig(in_num):
         _get_output_paths().get_pdf_file_path(in_num),
         bbox_inches='tight', pad_inches=0.01)
 
+
 def _mark_segment(in_beg, in_end):
     plt.plot(
         [in_beg[0], in_end[0]], [in_beg[1], in_end[1]],
@@ -66,6 +71,7 @@ def _mark_segment(in_beg, in_end):
         marker='o',
         color='black',
         linewidth=2)
+
 
 CONVEX_SHAPES = [_get_raw_convex_shape_a(), _get_raw_convex_shape_b()]
 NONCONVEX_SHAPES = [_get_raw_nonconvex_shape_a(), _get_raw_nonconvex_shape_b()]

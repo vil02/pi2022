@@ -1,3 +1,4 @@
+"""contains the definition of the OutputPats class"""
 import project_config as pc
 
 
@@ -6,6 +7,9 @@ def _tmp_data_dir():
 
 
 class OutputPaths:
+    """
+    helper class to manage the paths of the all TeX tmp_data
+    """
     def __init__(self, in_output_core_name, in_config_tex_name):
         self._output_core_name = in_output_core_name
         self._cofig_tex_name = in_config_tex_name
@@ -29,5 +33,8 @@ class OutputPaths:
         return pdf_dir/self.get_file_name(in_num)
 
     def get_tex_file_path(self):
+        """
+        returns the path of the TeX file to be included into the main document
+        """
         return \
             _tmp_data_dir()/pc.get_config_parameter(self._cofig_tex_name)

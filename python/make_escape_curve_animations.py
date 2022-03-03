@@ -3,13 +3,20 @@ import scipy.optimize
 import numpy
 import matplotlib.pyplot as plt
 
+import itertools
+
 import output_paths as op
 import escape_curve
 import plotable_convex_shapes
+import rotations
 
 
 class Optimizer():
     """generates the optimisition data for given scheme"""
+
+    @classmethod
+    def to_curve(cls, in_data):
+        return escape_curve.Curve(in_data, cls.max_curve_len/len(in_data))
 
     @classmethod
     def evaluate_data(cls, in_data):
@@ -45,10 +52,6 @@ class ExampleWithSingleShape(Optimizer):
     segment_size = max_curve_len/data_size
     bounds = [
         (numpy.radians(-180), numpy.radians(180)) for _ in range(data_size)]
-
-    @classmethod
-    def to_curve(cls, in_data):
-        return escape_curve.Curve(in_data, cls.max_curve_len/len(in_data))
 
     @classmethod
     def evaluate_curve(cls, curve):
@@ -90,6 +93,65 @@ class RectangleExample(ExampleWithSingleShape):
         plt.gca().set_ylim([-plot_size, plot_size])
 
 
+class ExampleWithMultipleShapes(Optimizer):
+    maxiter = 20
+    data_size = 50
+    max_curve_len = 7
+    segment_size = max_curve_len/data_size
+    bounds = [
+        (numpy.radians(-180), numpy.radians(180)) for _ in range(data_size)]
+
+    @classmethod
+    def evaluate_curve(cls, curve):
+        return max(curve.get_max_len_inside(_) for _ in cls.shapes)
+
+    @classmethod
+    def plot_state(cls, in_data):
+        cur_curve = cls.to_curve(in_data)
+        _init_figure()
+        # for _ in cls.shapes:
+        #     _.plot(facecolor='lightgreen')
+        for _ in cls.shapes:
+            _.plot(edgecolor='green', facecolor='none')
+        plt.plot(cur_curve.x_list, cur_curve.y_list, color='orange')
+        cls._set_limits()
+
+    @classmethod
+    def _set_limits(_):
+        plot_size = 3.3
+        plt.gca().set_xlim([-plot_size, plot_size])
+        plt.gca().set_ylim([-plot_size, plot_size])
+
+
+class Rectangle:
+    def __init__(self, in_xy_data):
+        self.xy_data = in_xy_data
+        self._patch_data = plt.Polygon(self.xy_data)
+
+    def __contains__(self, in_pos):
+        return self._patch_data.contains_point(in_pos, radius=0.001)
+
+    def plot(self, **kwargs):
+        plt.gca().add_patch(plt.Polygon(self.xy_data, **kwargs))
+
+
+def get_all_squares(in_shift_num, in_rotation_num):
+    initial_xy_data = numpy.array([[-1, 1], [1, 1], [1, -1], [-1, -1]])
+    res_list = []
+    for _ in itertools.product(list(numpy.linspace(-0.999, 0.999, in_shift_num)), repeat=2):
+        cur_shift = numpy.array(_)
+        for cur_rot in numpy.linspace(numpy.radians(0), numpy.radians(360), in_rotation_num, endpoint=False):
+            cur_xy = [rotations.rotate_2d(_, cur_rot)+cur_shift for _ in initial_xy_data]
+            cur_shape = Rectangle(cur_xy)
+            if numpy.array([0, 0]) in cur_shape:
+                res_list.append(cur_shape)
+    return res_list
+
+
+class ExampleSquares(ExampleWithMultipleShapes):
+    shapes = get_all_squares(3, 5)
+
+
 def make_plots(optimiser, core_name, tex_propety_name):
     cur_paths = op.OutputPaths(core_name, tex_propety_name)
     optimisation_data = optimiser.generate_data()
@@ -118,3 +180,6 @@ make_plots(
 
 make_plots(
     RectangleExample, 'esape_from_rectangle_example', 'escapeFromRectangleTex')
+
+make_plots(
+    ExampleSquares, 'esape_from_free_square_example', 'escapeFromFreeSquareTex')

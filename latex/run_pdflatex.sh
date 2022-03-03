@@ -52,8 +52,8 @@ rm -f ${pdf_file} ||
     exit 4
 }
 
-pdflatex -interaction=batchmode -draftmode "$tex_file" || true
-pdflatex -interaction=batchmode -draftmode "$tex_file" || true
+pdflatex -interaction=batchmode "$tex_file" || true
+pdflatex -interaction=batchmode "$tex_file" || true
 
 pdflatex -interaction=batchmode "$tex_file" ||
 {

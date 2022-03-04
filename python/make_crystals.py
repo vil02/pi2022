@@ -2,6 +2,8 @@
 generates data for the crystals example/annealing explanation
 """
 import itertools
+import copy
+import random
 import matplotlib.pyplot as plt
 
 import output_paths as op
@@ -25,6 +27,15 @@ class _Crystal:
             self.edges.add(tuple([node_a, node_b]))
         else:
             self.edges.add(tuple([node_b, node_a]))
+
+    def remove_edge(self, node_a, node_b):
+        """removes  an edge"""
+        self._check_node(node_a)
+        self._check_node(node_b)
+        if node_a < node_b:
+            self.edges.remove(tuple([node_a, node_b]))
+        else:
+            self.edges.remove(tuple([node_b, node_a]))
 
     def add_node(self, in_node):
         """adds a node"""
@@ -166,6 +177,9 @@ def _get_defected_crystal():
     insertion_range = list(range(14, 19))
     for cur_x in insertion_range:
         res.add_node((cur_x, 2.5))
+        res.remove_edge((cur_x, 2), (cur_x, 3))
+        res.add_edge((cur_x, 2), (cur_x, 2.5))
+        res.add_edge((cur_x, 3), (cur_x, 2.5))
         res.try_add_shift((cur_x, 2), (0, -insertion_shift))
         res.try_add_shift((cur_x, 1), (0, -insertion_shift/2))
         res.try_add_shift((cur_x, 3), (0, insertion_shift))
@@ -208,27 +222,44 @@ _get_regular_crystal().plot()
 _call_save_fig(0)
 plt.close()
 
+DEFECTED_CRYSTAL = _get_defected_crystal()
 _init_figure()
-_get_defected_crystal().plot()
+DEFECTED_CRYSTAL.plot()
 _call_save_fig(1)
 plt.close()
 
-TEX_STR = \
-    '\\begin{frame}\n' \
-    '  \\begin{center}\n' \
-    '    \\begin{overprint}\n'
-for _ in range(2):
-    cur_str = \
-        f'        \\onslide<{_+1}>' \
-        r'\centerline{\includegraphics[width=\textwidth]{' \
-        f'{_get_output_paths().get_short_pdf_path(_)}' \
-        '}}\n'
-    TEX_STR += cur_str
-TEX_STR += \
-    '    \\end{overprint}\n' \
-    '  \\end{center}\n'
+FRAME_LIMIT = 15
+for frame_num in range(2, FRAME_LIMIT):
+    _init_figure()
+    tmp_crystal = copy.deepcopy(DEFECTED_CRYSTAL)
+    for _ in tmp_crystal.nodes:
+        tmp_crystal.add_shift(
+            _, tuple(random.normalvariate(0, 0.025) for _ in range(2)))
+    tmp_crystal.plot()
+    _call_save_fig(frame_num)
+    plt.close()
 
-TEX_STR += '\\end{frame}\n'
+TEX_STR = ''
+for _ in range(2):
+    cur_file = _get_output_paths().get_short_pdf_path(_)
+    TEX_STR += \
+        '\\begin{frame}\n' + \
+        '  \\begin{center}\n' + \
+        f'    \\includegraphics{{{cur_file}}}\n' \
+        '  \\end{center}\n' \
+        '\\end{frame}\n'
+
+CORE_ANIM_NAME = str(_get_output_paths().get_short_pdf_path(-1))
+assert CORE_ANIM_NAME.endswith('_-1.pdf')
+CORE_ANIM_NAME = CORE_ANIM_NAME[0:-6]
+
+TEX_STR += \
+    '\\begin{frame}\n' + \
+    '  \\begin{center}\n' + \
+    '    \\animategraphics[autoplay,loop]{20}' + \
+    f'{{{CORE_ANIM_NAME}}}{{2}}{{{FRAME_LIMIT-1}}}\n' + \
+    '  \\end{center}\n' \
+    '\\end{frame}\n'
 
 TEX_FILE_PATH = _get_output_paths().get_tex_file_path()
 with open(

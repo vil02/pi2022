@@ -34,6 +34,18 @@ def angles_to_points_azimuth(
     return point_list
 
 
+def logo_agnles_to_azimuth_angles(in_logo_angles):
+    """
+    returns the list of azimuth angles based on in_logo_angles
+    """
+    res = []
+    cur_angle = 0
+    for _ in in_logo_angles:
+        cur_angle += _
+        res.append(cur_angle)
+    return res
+
+
 def get_curve_class(in_to_point_list_fun):
     """returns a Curve class"""
     class Curve:

@@ -45,3 +45,17 @@ def test_y_list(example_square_curve_str, request):
     """test of the y_list"""
     example_square_curve = request.getfixturevalue(example_square_curve_str)
     assert numpy.allclose(example_square_curve.y_list, [0, 0, 1, 1, 0])
+
+
+@pytest.mark.parametrize(
+    'in_logo_angles',
+    [numpy.random.rand(20) for _ in range(5)])
+def test_logo_agnles_to_azimuth_angles(in_logo_angles):
+    """test of the function logo_angles_to_azimuth_angles"""
+    segment_size = 3.2
+    logo_curve = curve.get_curve_class(curve.angles_to_points_logo)(
+        in_logo_angles, segment_size)
+    azimuth_curve = curve.get_curve_class(curve.angles_to_points_azimuth)(
+        curve.logo_agnles_to_azimuth_angles(in_logo_angles), segment_size)
+    for _ in zip(logo_curve.point_list, azimuth_curve.point_list):
+        numpy.allclose(*_)

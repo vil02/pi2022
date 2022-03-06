@@ -1,4 +1,4 @@
-"""contains a definition of the class Curve"""
+"""contains a definition of the function get_curve_class"""
 
 import copy
 import numpy.linalg
@@ -30,18 +30,21 @@ def find_distance_to_boundary(pos_in, pos_out, convex_set, inter_limit):
     return numpy.linalg.norm(res_pos-pos_in)
 
 
-class Curve(extendable_curve.Curve):
-    """
-    represents a curve used for the "escape problems"
-    """
-    def get_max_len_inside(self, in_convex_set, inter_limit=10):
+def get_curve_class(in_to_point_list_fun):
+    """returns a Curve class"""
+    class Curve(extendable_curve.get_curve_class(in_to_point_list_fun)):
         """
-        returns the length of the curve inside in_convex_set
+        represents a curve used for the "escape problems"
         """
-        assert self.point_list[0] in in_convex_set
-        cur_ind = 0
-        while self[cur_ind] in in_convex_set:
-            cur_ind += 1
-        return self.segment_size*(cur_ind-1) + \
-            find_distance_to_boundary(
-                self[cur_ind-1], self[cur_ind], in_convex_set, inter_limit)
+        def get_max_len_inside(self, in_convex_set, inter_limit=10):
+            """
+            returns the length of the curve inside in_convex_set
+            """
+            assert self.point_list[0] in in_convex_set
+            cur_ind = 0
+            while self[cur_ind] in in_convex_set:
+                cur_ind += 1
+            return self.segment_size*(cur_ind-1) + \
+                find_distance_to_boundary(
+                    self[cur_ind-1], self[cur_ind], in_convex_set, inter_limit)
+    return Curve

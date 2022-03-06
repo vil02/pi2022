@@ -8,6 +8,7 @@ import numpy
 
 import curve
 import output_paths as op
+import project_styles as ps
 
 
 def mark_angles(in_curve):
@@ -78,12 +79,12 @@ def plot_all(in_angle_deg_list, save_to_pdf=False, lim_data=None):
 
     plt.plot(
         example_curve.x_list, example_curve.y_list, linewidth=3, zorder=40,
-        color='orange')
+        color=ps.LOGO_COLOR)
     plt.plot(
         example_curve.x_list, example_curve.y_list,
         linestyle='None', marker='o',
         zorder=50,
-        color='olive')
+        color=ps.LOGO_COLOR)
     call_save_fig(1)
     mark_angles(example_curve)
     call_save_fig(2)

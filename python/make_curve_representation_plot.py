@@ -70,7 +70,7 @@ def plot_all(in_angle_deg_list, save_to_pdf=False, lim_data=None):
         plt.gca().set_ylim(lim_data[1])
     else:
         assert not save_to_pdf
-    example_curve = curve.Curve(
+    example_curve = curve.get_curve_class(curve.angles_to_points_logo)(
         [math.radians(_) for _ in in_angle_deg_list], 1)
     smooth_data = get_smooth_data(example_curve)
     plt.plot(smooth_data[:, 0], smooth_data[:, 1], linewidth=3, zorder=20)

@@ -14,9 +14,17 @@ class OutputPaths:
         self._output_core_name = in_output_core_name
         self._cofig_tex_name = in_config_tex_name
 
+    def _get_output_dir(self):
+        res_dir = _tmp_data_dir()/self._output_core_name
+        res_dir.mkdir(parents=True, exist_ok=True)
+        return res_dir
+
+    def _get_file_name(self, in_file_name_postfix):
+        return f'{self._output_core_name}_{in_file_name_postfix}'
+
     def get_file_name(self, in_num):
         """returns the name of the pdf file of given number"""
-        return f'{self._output_core_name}_{in_num}.pdf'
+        return self._get_file_name(f'{in_num}.pdf')
 
     def get_short_pdf_path(self, in_num):
         """
@@ -28,9 +36,7 @@ class OutputPaths:
         """
         returns the path of the ouput file for the given number
         """
-        pdf_dir = _tmp_data_dir()/self._output_core_name
-        pdf_dir.mkdir(parents=True, exist_ok=True)
-        return pdf_dir/self.get_file_name(in_num)
+        return self._get_output_dir()/self.get_file_name(in_num)
 
     def get_tex_file_path(self):
         """
@@ -38,3 +44,7 @@ class OutputPaths:
         """
         return \
             _tmp_data_dir()/pc.get_config_parameter(self._cofig_tex_name)
+
+    def get_general_file_path(self, in_file_name_postfix):
+        """returns the path of the output file with given postfix"""
+        return self._get_output_dir()/self._get_file_name(in_file_name_postfix)

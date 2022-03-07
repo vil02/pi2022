@@ -9,12 +9,17 @@ import curve
 import escape_curve
 import plotable_convex_shapes
 import project_styles as ps
+import rotations
 
 
 def get_optimizer(in_angles_to_points_fun):
     """returns an Optimizer class"""
     class Optimizer():
         """generates the optimisition data for given scheme"""
+        @classmethod
+        def _check_data(cls):
+            print(cls.max_curve_len, cls.data_size, cls.segment_size)
+            assert cls.max_curve_len/cls.data_size == cls.segment_size
 
         @classmethod
         def to_curve(cls, in_data):
@@ -27,6 +32,7 @@ def get_optimizer(in_angles_to_points_fun):
 
         @classmethod
         def generate_data(cls):
+            cls._check_data()
             RowType = collections.namedtuple(
                 'RowType', ['data', 'function_value', 'time'])
             res_data = []
@@ -111,6 +117,112 @@ def get_rectangle_example(in_angles_to_points_fun):
     return RectangleExample
 
 
+def get_example_with_multiple_shapes(in_angles_to_points_fun):
+    class ExampleWithMultipleShapes(get_optimizer(in_angles_to_points_fun)):
+        maxiter = 40
+        data_size = 50
+        max_curve_len = 3
+        segment_size = max_curve_len/data_size
+        bounds = [
+            (numpy.radians(-180), numpy.radians(180)) for _ in range(data_size)]
+
+        @classmethod
+        def evaluate_curve_max(cls, curve, in_iter_limit):
+            return max(curve.get_max_len_inside(_, in_iter_limit) for _ in cls.shapes)
+
+        @classmethod
+        def evaluate_curve_sum(cls, curve, in_iter_limit):
+            return sum(curve.get_max_len_inside(_, in_iter_limit) for _ in cls.shapes)
+
+        @classmethod
+        def evaluate_data_max(cls, in_data, in_iter_limit=3):
+            return cls.evaluate_curve_max(cls.to_curve(in_data), in_iter_limit)
+
+        @classmethod
+        def evaluate_data_sum(cls, in_data, in_iter_limit=3):
+            return cls.evaluate_curve_sum(cls.to_curve(in_data), in_iter_limit)
+
+        @classmethod
+        def generate_data(cls):
+            cls._check_data()
+            RowType = collections.namedtuple(
+                'RowType', ['data', 'function_value', 'time'])
+            res_data = []
+            start_time = time.time()
+
+            def callback_fun(in_data, in_fun_val, context):
+                nonlocal res_data
+                y_val = cls.evaluate_data_max(in_data)
+                print(y_val, cls.evaluate_data_max(in_data, 5), cls.evaluate_data_max(in_data, 10))
+                res_data.append(RowType(
+                    in_data,
+                    y_val,
+                    time.time()-start_time))
+
+            res_sum = scipy.optimize.dual_annealing(
+                lambda x: cls.evaluate_data_sum(x),
+                cls.bounds,
+                maxiter=cls.maxiter,
+                callback=callback_fun)
+            scipy.optimize.dual_annealing(
+                lambda x: cls.evaluate_data_max(x),
+                cls.bounds,
+                maxiter=10,
+                callback=callback_fun,
+                x0=res_sum.x)
+            return res_data
+
+        @classmethod
+        def plot_state(cls, in_data, curve_color):
+            cur_curve = cls.to_curve(in_data)
+            _init_figure()
+            #cls.shape.plot(facecolor='lightgreen', edgecolor='green')
+            plt.plot(cur_curve.x_list, cur_curve.y_list, color=curve_color)
+            cls._set_limits()
+    return ExampleWithMultipleShapes
+
+
+class Rectangle:
+    def __init__(self, in_xy_data):
+        self._xy_data = in_xy_data
+        self._patch_data = plt.Polygon(self.xy_data)
+
+    def __contains__(self, in_pos):
+        return self._patch_data.contains_point(in_pos)
+
+    def plot(self, **kwargs):
+        plt.gca().add_patch(plt.Polygon(self._xy_data, **kwargs))
+
+
+def _get_data_for_strip(in_shift_num, in_rotation_num):
+    x_rad = 4
+    initial_xy_data = numpy.array(
+        [[-x_rad, 0.5], [x_rad, 0.5], [x_rad, -0.5], [-x_rad, -0.5]])
+    res_list = []
+    for y_shift in numpy.linspace(-0.4995, 0.4995, in_shift_num):
+        cur_shift = numpy.array([0, y_shift])
+        for cur_rot in numpy.linspace(numpy.radians(0), numpy.radians(360), in_rotation_num, endpoint=False):
+            cur_xy = [rotations.rotate_2d(_, cur_rot)+cur_shift for _ in initial_xy_data]
+            cur_shape = Rectangle(cur_xy)
+            assert numpy.array([0, 0]) in cur_shape
+            res_list.append(cur_shape)
+    print(len(res_list))
+    return res_list
+
+
+def get_strip_example(in_angles_to_points_fun):
+    class StripExample(
+            get_example_with_multiple_shapes(in_angles_to_points_fun)):
+        shapes = _get_data_for_strip(60, 50)
+
+        @classmethod
+        def _set_limits(_):
+            plot_size = 1.7
+            plt.gca().set_xlim([-plot_size, plot_size])
+            plt.gca().set_ylim([-plot_size, plot_size])
+    return StripExample
+
+
 def generate_animation_data(
         optimiser, core_name, tex_propety_name, curve_color):
     cur_paths = op.OutputPaths(core_name, tex_propety_name)
@@ -130,6 +242,11 @@ def generate_animation_data(
     with open(
             cur_paths.get_tex_file_path(), 'w', encoding='utf-8') as tex_file:
         tex_file.write(tex_str)
+
+    with open(
+            cur_paths.get_general_file_path('_raw_res.txt'),
+            'w', encoding='utf-8') as res_file:
+        res_file.write(f'{optimisation_data}')
     return optimisation_data
 
 
@@ -195,3 +312,7 @@ make_single_shape_plots(
     'esape_from_rectangle_logo_example', 'escapeFromRectangleLogoTex',
     'esape_from_rectangle_azimuth_example', 'escapeFromRectangleAzimuthTex',
     'escape_from_rectangle_conv_plot', 'escapeFromRectangleConvPlotTex')
+
+generate_animation_data(
+        get_strip_example(curve.angles_to_points_azimuth),
+        'escape_from_strip', 'escapeFromStripTex', ps.AZIMUTH_COLOR)

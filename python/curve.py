@@ -50,6 +50,8 @@ def logo_agnles_to_azimuth_angles(in_logo_angles):
 
 
 class _AbstractCurve:
+    _point_list = []
+
     @property
     def point_list(self):
         """returns potins of the curve in order"""
@@ -65,11 +67,6 @@ class _AbstractCurve:
         """returns the y-coordinates of point_list"""
         return tuple(_[1] for _ in self.point_list)
 
-    @property
-    def angle_list(self):
-        """returns the angle_list"""
-        return self._angle_list
-
 
 def get_angle_curve_class(in_to_point_list_fun):
     """returns an AngleCurve class"""
@@ -81,6 +78,11 @@ def get_angle_curve_class(in_to_point_list_fun):
             self._angle_list = copy.deepcopy(in_angle_list)
             self._point_list = in_to_point_list_fun(
                 self._angle_list, in_segment_size)
+
+        @property
+        def angle_list(self):
+            """returns the angle_list"""
+            return self._angle_list
 
     return AngleCurve
 

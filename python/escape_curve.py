@@ -49,7 +49,7 @@ def calculate_dist_list(in_point_list):
 
 def get_curve_class(in_curve_class):
     """returns a Curve class"""
-    class Curve(in_curve_class):
+    class Curve(in_curve_class):  # pylint: disable=too-few-public-methods
         """
         represents a curve used for the "escape problems"
         """

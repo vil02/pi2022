@@ -7,7 +7,7 @@ import escape_curve
 import convex_shapes
 
 
-@pytest.mark.parametrize("initial_angle", numpy.linspace(0, 2 * numpy.pi, 5))
+@pytest.mark.parametrize("initial_angle", numpy.linspace(0, 2*numpy.pi, 5))
 @pytest.mark.parametrize("radius", numpy.linspace(0.2, 5, 5))
 @pytest.mark.parametrize("segment_size", numpy.linspace(0.1, 5, 5))
 @pytest.mark.parametrize(
@@ -24,3 +24,15 @@ def test_with_wheel_and_line(initial_angle, radius, segment_size, curve_class):
     unit_wheel = convex_shapes.Wheel([0, 0], radius)
     cur_curve = curve_class([initial_angle], segment_size)
     assert abs(cur_curve.get_max_len_inside(unit_wheel, 20) - radius) < 0.00001
+
+
+def test_calculate_dist_list():
+    """test of the function calculate_dist_list"""
+    point_list = [
+        numpy.array([0, 0]),
+        numpy.array([0, 1]),
+        numpy.array([1, 1]),
+        numpy.array([2, 1]),
+        numpy.array([2, 10])]
+    dist_list = [0, 1, 2, 3, 12]
+    assert escape_curve.calculate_dist_list(point_list) == dist_list

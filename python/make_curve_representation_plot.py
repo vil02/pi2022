@@ -22,11 +22,11 @@ def mark_logo_angles(in_curve):
         tmp_angles = [
             numpy.degrees(total_angle), numpy.degrees(total_angle+cur_angle)]
         cur_angle_marker = matplotlib.patches.Wedge(
-            cur_pos, 0.5*in_curve.segment_size,
+            cur_pos, 0.5,
             theta1=min(tmp_angles), theta2=max(tmp_angles),
             alpha=0.4,
             zorder=cur_zorder)
-        dir_line_len = 0.6*in_curve.segment_size
+        dir_line_len = 0.6
         plt.plot(
             [cur_pos[0], cur_pos[0]+dir_line_len*numpy.cos(total_angle)],
             [cur_pos[1], cur_pos[1]+dir_line_len*numpy.sin(total_angle)],
@@ -48,11 +48,11 @@ def mark_azimuth_angles(in_curve):
         if angle_to_mark > 180:
             angle_to_mark -= 360
         cur_angle_marker = matplotlib.patches.Wedge(
-            cur_pos, 0.5*in_curve.segment_size,
+            cur_pos, 0.5,
             theta1=min([0, angle_to_mark]), theta2=max([0, angle_to_mark]),
             alpha=0.4,
             zorder=cur_zorder)
-        dir_line_len = 0.6*in_curve.segment_size
+        dir_line_len = 0.6
         plt.plot(
             [cur_pos[0], cur_pos[0]+dir_line_len],
             [cur_pos[1], cur_pos[1]],

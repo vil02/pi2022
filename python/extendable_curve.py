@@ -2,9 +2,9 @@
 import curve
 
 
-def get_curve_class(in_to_point_list_fun):
+def get_curve_class(in_curve_class):
     """returns a Curve class"""
-    class Curve(curve.get_angle_curve_class(in_to_point_list_fun)):
+    class Curve(in_curve_class):
         """
         represent a curve which can be extended
         in the direction of the last segment
@@ -18,3 +18,8 @@ def get_curve_class(in_to_point_list_fun):
             last_diff = self.point_list[-1]-self.point_list[-2]
             self._point_list.append(self.point_list[-1]+last_diff)
     return Curve
+
+
+LogoCurve = get_curve_class(curve.LogoCurve)
+AzimuthCurve = get_curve_class(curve.AzimuthCurve)
+PointCurve = get_curve_class(curve.PointCurve)

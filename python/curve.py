@@ -85,7 +85,11 @@ def get_angle_curve_class(in_to_point_list_fun):
     return AngleCurve
 
 
+LogoCurve = get_angle_curve_class(angles_to_points_logo)
+AzimuthCurve = get_angle_curve_class(angles_to_points_azimuth)
+
+
 class PointCurve(_AbstractCurve):
     """represetns a zig-zag-curvestarting at the point (0, 0)"""
     def __init__(self, in_point_list):
-        self._point_list = [(0, 0)]+in_point_list
+        self._point_list = [numpy.array([0, 0])]+in_point_list

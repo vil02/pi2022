@@ -1,29 +1,37 @@
 """tests for the module escape_curve"""
 import numpy
+import itertools
 import pytest
 
-import curve
 import escape_curve
 import convex_shapes
 
 
-@pytest.mark.parametrize("initial_angle", numpy.linspace(0, 2*numpy.pi, 5))
-@pytest.mark.parametrize("radius", numpy.linspace(0.2, 5, 5))
-@pytest.mark.parametrize("segment_size", numpy.linspace(0.1, 5, 5))
-@pytest.mark.parametrize(
-    "curve_class",
-    [
-        escape_curve.get_curve_class(curve.angles_to_points_logo),
-        escape_curve.get_curve_class(curve.angles_to_points_azimuth),
-    ],
-)
-def test_with_wheel_and_line(initial_angle, radius, segment_size, curve_class):
+def _get_example_curves():
+    res_list = []
+    angle_curve_class_list = [
+        escape_curve.LogoCurve, escape_curve.AzimuthCurve]
+    for initial_angle, segment_size, curve_class in itertools.product(
+            numpy.linspace(0, 2*numpy.pi, 5),
+            numpy.linspace(0.1, 5, 5),
+            angle_curve_class_list):
+        res_list.append(curve_class([initial_angle], segment_size))
+
+    for _ in itertools.product(
+            numpy.linspace(-0.3, 0.7, 5), repeat=2):
+        res_list.append(escape_curve.PointCurve([numpy.array(_)]))
+    return res_list
+
+
+@pytest.mark.parametrize("example_curve",  _get_example_curves())
+@pytest.mark.parametrize("radius",  numpy.linspace(0.2, 5, 5))
+def test_with_wheel_and_line(example_curve, radius):
     """
     test the method get_max_len_inside in case of a straing line and a Wheel
     """
     unit_wheel = convex_shapes.Wheel([0, 0], radius)
-    cur_curve = curve_class([initial_angle], segment_size)
-    assert abs(cur_curve.get_max_len_inside(unit_wheel, 20) - radius) < 0.00001
+    assert abs(example_curve.get_max_len_inside(unit_wheel, 20)-radius) < \
+        0.00001
 
 
 def test_calculate_dist_list():

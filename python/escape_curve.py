@@ -29,8 +29,10 @@ def find_distance_to_boundary(pos_in, pos_out, convex_set, inter_limit):
     res_pos = get_mid_point(tmp_a, tmp_b)
     return numpy.linalg.norm(res_pos-pos_in)
 
+
 def _add_single_segment(dist_list, in_segment_len):
     dist_list.append(dist_list[-1]+in_segment_len)
+
 
 def calculate_dist_list(in_point_list):
     """
@@ -45,9 +47,9 @@ def calculate_dist_list(in_point_list):
     return res
 
 
-def get_curve_class(in_to_point_list_fun):
+def get_curve_class(in_curve_class):
     """returns a Curve class"""
-    class Curve(extendable_curve.get_curve_class(in_to_point_list_fun)):
+    class Curve(in_curve_class):
         """
         represents a curve used for the "escape problems"
         """
@@ -74,3 +76,8 @@ def get_curve_class(in_to_point_list_fun):
                 find_distance_to_boundary(
                     self[cur_ind-1], self[cur_ind], in_convex_set, inter_limit)
     return Curve
+
+
+LogoCurve = get_curve_class(extendable_curve.LogoCurve)
+AzimuthCurve = get_curve_class(extendable_curve.AzimuthCurve)
+PointCurve = get_curve_class(extendable_curve.PointCurve)

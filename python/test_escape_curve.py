@@ -1,6 +1,6 @@
 """tests for the module escape_curve"""
-import numpy
 import itertools
+import numpy
 import pytest
 
 import escape_curve
@@ -23,8 +23,8 @@ def _get_example_curves():
     return res_list
 
 
-@pytest.mark.parametrize("example_curve",  _get_example_curves())
-@pytest.mark.parametrize("radius",  numpy.linspace(0.2, 5, 5))
+@pytest.mark.parametrize("example_curve", _get_example_curves())
+@pytest.mark.parametrize("radius", numpy.linspace(0.2, 5, 5))
 def test_with_wheel_and_line(example_curve, radius):
     """
     test the method get_max_len_inside in case of a straing line and a Wheel

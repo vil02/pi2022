@@ -205,7 +205,8 @@ def get_example_with_multiple_shapes(in_angles_to_points_fun):
         def plot_state(cls, in_data, curve_color):
             cur_curve = cls.to_curve(in_data)
             _init_figure()
-            #cls.shape.plot(facecolor='lightgreen', edgecolor='green')
+            # for _ in cls.shapes:
+            #     _.plot(facecolor='none', edgecolor='green')
             cls.plot_curve(
                 cur_curve, cls.evaluate_curve_max(cur_curve, 10), curve_color)
             cls._set_limits()
@@ -231,7 +232,7 @@ def _get_data_for_strip(in_shift_num, in_rotation_num):
     res_list = []
     for y_shift in numpy.linspace(-0.4995, 0.4995, in_shift_num):
         cur_shift = numpy.array([0, y_shift])
-        for cur_rot in numpy.linspace(numpy.radians(0), numpy.radians(360), in_rotation_num, endpoint=False):
+        for cur_rot in numpy.linspace(numpy.radians(0), numpy.radians(180), in_rotation_num, endpoint=False):
             cur_xy = [rotations.rotate_2d(_, cur_rot)+cur_shift for _ in initial_xy_data]
             cur_shape = Rectangle(cur_xy)
             assert numpy.array([0, 0]) in cur_shape
@@ -259,7 +260,7 @@ def _get_data_for_halfplane(in_rotation_num):
 def get_strip_example(in_angles_to_points_fun):
     class StripExample(
             get_example_with_multiple_shapes(in_angles_to_points_fun)):
-        shapes = _get_data_for_strip(60, 50)
+        shapes = _get_data_for_strip(60, 25)
 
         @classmethod
         def _set_limits(_):

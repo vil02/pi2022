@@ -4,7 +4,7 @@ import curve
 
 def get_curve_class(in_curve_class):
     """returns a Curve class"""
-    class Curve(in_curve_class):
+    class Curve(in_curve_class):  # pylint: disable=too-few-public-methods
         """
         represent a curve which can be extended
         in the direction of the last segment

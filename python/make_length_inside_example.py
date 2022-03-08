@@ -12,13 +12,11 @@ import curve
 
 
 def _get_output_paths_convex():
-    return op.OutputPaths(
-        'length_inside_examples', 'lengthInsideExampleTex')
+    return op.OutputPaths('lengthInsideExampleTex')
 
 
 def _get_output_paths_nonconvex():
-    return op.OutputPaths(
-        'length_inside_nonconvex_example', 'lengthInsideExampleNonconvexTex')
+    return op.OutputPaths('lengthInsideExampleNonconvexTex')
 
 
 def _get_raw_shape():

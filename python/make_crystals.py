@@ -208,7 +208,7 @@ def _get_defected_crystal():
 
 
 def _get_output_paths():
-    return op.OutputPaths('crystals_example', 'crystalsExamplesTex')
+    return op.OutputPaths('crystalsExamplesTex')
 
 
 def _call_save_fig(in_num):

@@ -50,6 +50,9 @@ def read_paths_and_names():
         if _.endswith('Folder'):
             res[_] = latex_folder/pathlib.Path(res[_])
 
+    tex_names = [key for key in res if key.endswith('Tex')]
+    assert len(tex_names) == len({res[_] for _ in tex_names})
+
     return res
 
 

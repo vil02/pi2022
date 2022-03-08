@@ -3,15 +3,22 @@ import project_config as pc
 
 
 def _tmp_data_dir():
+
     return pc.get_config_parameter('tmpDataFolder')
+
+
+def _get_core_name(in_tex_name):
+    res = pc.get_config_parameter(in_tex_name)
+    assert res.endswith('.tex')
+    return res[:-4]
 
 
 class OutputPaths:
     """
     helper class to manage the paths of the all TeX tmp_data
     """
-    def __init__(self, in_output_core_name, in_config_tex_name):
-        self._output_core_name = in_output_core_name
+    def __init__(self, in_config_tex_name):
+        self._output_core_name = _get_core_name(in_config_tex_name)
         self._cofig_tex_name = in_config_tex_name
 
     def _get_output_dir(self):

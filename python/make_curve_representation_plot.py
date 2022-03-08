@@ -63,8 +63,7 @@ def mark_azimuth_angles(in_curve):
 
 
 def _get_output_paths():
-    return op.OutputPaths(
-        'curve_representation_example', 'curveRepresentationExampleTex')
+    return op.OutputPaths('curveRepresentationExampleTex')
 
 
 def get_smooth_data(in_curve):

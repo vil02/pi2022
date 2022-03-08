@@ -291,8 +291,8 @@ def get_halfplane_example(in_angles_to_points_fun):
 
 
 def generate_animation_data(
-        optimiser, core_name, tex_propety_name, curve_color):
-    cur_paths = op.OutputPaths(core_name, tex_propety_name)
+        optimiser, tex_propety_name, curve_color):
+    cur_paths = op.OutputPaths(tex_propety_name)
     optimisation_data = optimiser.generate_data()
     for (frame_number, cur_data) in enumerate(optimisation_data):
         optimiser.plot_state(cur_data.data, curve_color)
@@ -351,32 +351,30 @@ def create_comparison_conv_plot(in_logo_data, in_azimuth_data, in_paths):
 
 def make_single_shape_plots(
         in_example_fun,
-        logo_core_name, logo_tex_name,
-        azimuth_core_name, azimuth_tex_name,
-        conv_plot_core_name, conv_plot_tex_name):
+        logo_tex_name,
+        azimuth_tex_name,
+        conv_plot_tex_name):
     logo_data = generate_animation_data(
         in_example_fun(curve.angles_to_points_logo),
-        logo_core_name, logo_tex_name,
+        logo_tex_name,
         ps.LOGO_COLOR)
 
     azimuth_data = generate_animation_data(
         in_example_fun(curve.angles_to_points_azimuth),
-        azimuth_core_name, azimuth_tex_name,
+        azimuth_tex_name,
         ps.AZIMUTH_COLOR)
 
     create_comparison_conv_plot(
         logo_data, azimuth_data,
-        op.OutputPaths(conv_plot_core_name, conv_plot_tex_name))
+        op.OutputPaths(conv_plot_tex_name))
 
 
-def make_multiple_shapes_plots(
-        in_example_class, core_name, tex_name,
-        conv_plot_name, conv_plot_tex_name):
+def make_multiple_shapes_plots(in_example_class, tex_name, conv_plot_tex_name):
     opt_data = generate_animation_data(
             in_example_class,
-            core_name, tex_name, ps.AZIMUTH_COLOR)
+            tex_name, ps.AZIMUTH_COLOR)
 
-    conv_paths = op.OutputPaths(conv_plot_name, conv_plot_tex_name)
+    conv_paths = op.OutputPaths(conv_plot_tex_name)
     _init_conv_plot()
     _plot_conv_data(opt_data, ps.AZIMUTH_COLOR, 'azumut')
     plt.xlabel('[s]')
@@ -391,35 +389,29 @@ def make_multiple_shapes_plots(
 
 make_single_shape_plots(
     get_unit_ball_example,
-    'esape_from_unit_circle_logo_example', 'escapeFromCircleLogoTex',
-    'esape_from_unit_circle_azimuth_example', 'escapeFromCircleAzimuthTex',
-    'escape_from_unit_circle_conv_plot', 'escapeFromCircleConvPlotTex')
+    'escapeFromCircleLogoTex',
+    'escapeFromCircleAzimuthTex',
+    'escapeFromCircleConvPlotTex')
 
 make_single_shape_plots(
     get_unit_ball_fixed_direction_example,
-    'esape_from_unit_circle_logo_fixed_example',
     'escapeFromCircleLogoFixedTex',
-    'esape_from_unit_circle_azimuth_fixed_example',
     'escapeFromCircleAzimuthFixedTex',
-    'escape_from_unit_circle_conv_fixed_plot',
     'escapeFromCircleConvPlotFixedTex')
 
 make_single_shape_plots(
     get_rectangle_example,
-    'esape_from_rectangle_logo_example', 'escapeFromRectangleLogoTex',
-    'esape_from_rectangle_azimuth_example', 'escapeFromRectangleAzimuthTex',
-    'escape_from_rectangle_conv_plot', 'escapeFromRectangleConvPlotTex')
+    'escapeFromRectangleLogoTex',
+    'escapeFromRectangleAzimuthTex',
+    'escapeFromRectangleConvPlotTex')
 
-generate_animation_data(
-        get_strip_example(curve.angles_to_points_azimuth),
-        'escape_from_strip', 'escapeFromStripTex', ps.AZIMUTH_COLOR)
 
 make_multiple_shapes_plots(
         get_strip_example(curve.angles_to_points_azimuth),
-        'escape_from_strip', 'escapeFromStripTex',
-        'escape_from_strip_conv_plot', 'escapeFromStripConvPlotTex')
+        'escapeFromStripTex',
+        'escapeFromStripConvPlotTex')
 
 make_multiple_shapes_plots(
         get_halfplane_example(curve.angles_to_points_azimuth),
-        'escape_from_halfplane', 'escapeFromHalfplaneTex',
-        'escape_from_halfplane_conv_plot', 'escapeFromHalfplaneConvPlotTex')
+        'escapeFromHalfplaneTex',
+        'escapeFromHalfplaneConvPlotTex')

@@ -54,8 +54,7 @@ def _set_limits():
 
 
 def _get_output_paths():
-    return op.OutputPaths(
-        'convex_examples', 'convexExamplesTex')
+    return op.OutputPaths('convexExamplesTex')
 
 
 def _call_save_fig(in_num):

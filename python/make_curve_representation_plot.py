@@ -110,7 +110,7 @@ def plot_all(in_angle_deg_list, save_to_pdf=False, lim_data=None):
         plt.gca().set_ylim(lim_data[1])
     else:
         assert not save_to_pdf
-    example_curve = curve.get_curve_class(curve.angles_to_points_logo)(
+    example_curve = curve.get_angle_curve_class(curve.angles_to_points_logo)(
         [math.radians(_) for _ in in_angle_deg_list], 1)
     _plot_smooth_data(get_smooth_data(example_curve))
     call_save_fig(0)
@@ -140,7 +140,7 @@ def plot_azimuth(in_angle_deg_list, lim_data):
     plt.gca().set_xlim(lim_data[0])
     plt.gca().set_ylim(lim_data[1])
 
-    example_curve = curve.get_curve_class(curve.angles_to_points_azimuth)(
+    example_curve = curve.get_angle_curve_class(curve.angles_to_points_azimuth)(
         [math.radians(_) for _ in in_angle_deg_list], 1)
     _plot_smooth_data(get_smooth_data(example_curve))
 

@@ -72,7 +72,7 @@ def _call_save_fig(in_num, output_path_obj):
 
 
 def _get_example_curve():
-    return curve.get_curve_class(curve.angles_to_points_logo)(
+    return curve.get_angle_curve_class(curve.angles_to_points_logo)(
         [numpy.radians(_) for _ in [-60, 70, 30, 40, -10, 5, -5, 10]], 1)
 
 

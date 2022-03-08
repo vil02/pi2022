@@ -12,7 +12,7 @@ def fixture_example_square_logo_curve():
     returns a logo-Curve object representing a "counterclockwise unit square"
     """
     angle_deg_list = [0, 90, 90, 90]
-    yield curve.get_curve_class(curve.angles_to_points_logo)(
+    yield curve.get_angle_curve_class(curve.angles_to_points_logo)(
         [numpy.radians(_) for _ in angle_deg_list], 1)
 
 
@@ -23,7 +23,7 @@ def fixture_example_square_azimuth_curve():
     "counterclockwise unit square"
     """
     angle_deg_list = [0, 90, 180, 270]
-    yield curve.get_curve_class(curve.angles_to_points_azimuth)(
+    yield curve.get_angle_curve_class(curve.angles_to_points_azimuth)(
         [numpy.radians(_) for _ in angle_deg_list], 1)
 
 
@@ -53,9 +53,11 @@ def test_y_list(example_square_curve_str, request):
 def test_logo_agnles_to_azimuth_angles(in_logo_angles):
     """test of the function logo_angles_to_azimuth_angles"""
     segment_size = 3.2
-    logo_curve = curve.get_curve_class(curve.angles_to_points_logo)(
-        in_logo_angles, segment_size)
-    azimuth_curve = curve.get_curve_class(curve.angles_to_points_azimuth)(
-        curve.logo_agnles_to_azimuth_angles(in_logo_angles), segment_size)
+    logo_curve = \
+        curve.get_angle_curve_class(curve.angles_to_points_logo)(
+            in_logo_angles, segment_size)
+    azimuth_curve = \
+        curve.get_angle_curve_class(curve.angles_to_points_azimuth)(
+            curve.logo_agnles_to_azimuth_angles(in_logo_angles), segment_size)
     for _ in zip(logo_curve.point_list, azimuth_curve.point_list):
         numpy.allclose(*_)

@@ -1,4 +1,7 @@
-"""contains the definition of the function get_curve_class"""
+"""
+contains the definition of the functions returing classes representing curves
+starting at the point (0, 0)
+"""
 
 import copy
 import numpy
@@ -46,9 +49,9 @@ def logo_agnles_to_azimuth_angles(in_logo_angles):
     return res
 
 
-def get_curve_class(in_to_point_list_fun):
-    """returns a Curve class"""
-    class Curve:
+def get_angle_curve_class(in_to_point_list_fun):
+    """returns an AngleCurve class"""
+    class AngleCurve:
         """
         represents a curve
         """
@@ -82,4 +85,4 @@ def get_curve_class(in_to_point_list_fun):
         def segment_size(self):
             """returns the segment_size"""
             return self._segment_size
-    return Curve
+    return AngleCurve

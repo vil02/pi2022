@@ -4,7 +4,7 @@ import curve
 
 def get_curve_class(in_to_point_list_fun):
     """returns a Curve class"""
-    class Curve(curve.get_curve_class(in_to_point_list_fun)):
+    class Curve(curve.get_angle_curve_class(in_to_point_list_fun)):
         """
         represent a curve which can be extended
         in the direction of the last segment

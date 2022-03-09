@@ -20,6 +20,7 @@ def _get_example_curves():
     for _ in itertools.product(
             numpy.linspace(-0.3, 0.7, 5), repeat=2):
         res_list.append(escape_curve.PointCurve([numpy.array(_)]))
+        res_list.append(escape_curve.ShiftCurve([numpy.array(_)]))
     return res_list
 
 

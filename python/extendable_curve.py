@@ -1,4 +1,5 @@
 """contains a definition of the function get_curve_class"""
+import numpy
 import curve
 
 
@@ -16,6 +17,8 @@ def get_curve_class(in_curve_class):
 
         def _add_single_point(self):
             last_diff = self.point_list[-1]-self.point_list[-2]
+            if numpy.linalg.norm(last_diff) < 0.0001:
+                last_diff = numpy.array([1.0, 0.0])
             self._point_list.append(self.point_list[-1]+last_diff)
     return Curve
 

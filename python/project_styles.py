@@ -2,3 +2,5 @@
 
 LOGO_COLOR = 'orange'
 AZIMUTH_COLOR = 'blue'
+POINT_COLOR = 'red'
+SHIFT_COLOR = 'purple'

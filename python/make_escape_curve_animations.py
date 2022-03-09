@@ -5,35 +5,88 @@ import matplotlib.pyplot as plt
 import time
 
 import output_paths as op
-import curve
 import escape_curve
 import plotable_convex_shapes
 import project_styles as ps
 import rotations
 
 
-def get_optimizer(in_angles_to_points_fun):
+class PointCurveDataRepresentation:
+    def __init__(self, in_data_size, min_val, max_val):
+        assert in_data_size % 2 == 0
+        self._data_size = in_data_size
+        self._bounds = [(min_val, max_val) for _ in range(in_data_size)]
+
+    @property
+    def bounds(self):
+        return self._bounds
+
+    def to_curve(self, in_data):
+        assert len(in_data) == self._data_size
+        point_list = [
+            numpy.array(in_data[_:_+2]) for _ in range(0, self._data_size, 2)]
+        return escape_curve.PointCurve(point_list)
+
+
+class ShiftCurveDataRepresentation:
+    def __init__(self, in_data_size, min_val, max_val):
+        assert in_data_size % 2 == 0
+        self._data_size = in_data_size
+        self._bounds = [(min_val, max_val) for _ in range(in_data_size)]
+
+    @property
+    def bounds(self):
+        return self._bounds
+
+    def to_curve(self, in_data):
+        assert len(in_data) == self._data_size
+        shift_list = [
+            numpy.array(in_data[_:_+2]) for _ in range(0, self._data_size, 2)]
+        return escape_curve.ShiftCurve(shift_list)
+
+
+def get_angle_curve_data_representation(in_curve_class):
+    class AngleCurveDataRepresentation:
+        def __init__(self, data_size, max_curve_len):
+            self._segment_size = max_curve_len/data_size
+            single_bound = (numpy.radians(-180), numpy.radians(180))
+            self._bounds = [single_bound for _ in range(data_size)]
+
+        @property
+        def bounds(self):
+            return self._bounds
+
+        def to_curve(self, in_angle_data):
+            return in_curve_class(in_angle_data, self._segment_size)
+
+    return AngleCurveDataRepresentation
+
+
+def find_last_node_num(curve_data, in_len):
+    cur_len = 0
+    prev_len = -1
+    cur_node_num = 0
+    assert 0 < in_len
+    while cur_len < in_len:
+        cur_shift = curve_data[cur_node_num+1]-curve_data[cur_node_num]
+        prev_len = cur_len
+        last_segment_len = numpy.linalg.norm(cur_shift)
+        cur_len += last_segment_len
+        cur_node_num += 1
+    return cur_node_num-1, prev_len, last_segment_len
+
+
+def get_optimizer(data_representation):
     """returns an Optimizer class"""
     class Optimizer():
         """generates the optimisition data for given scheme"""
-        @classmethod
-        def _check_data(cls):
-            print(cls.max_curve_len, cls.data_size, cls.segment_size)
-            assert cls.max_curve_len/cls.data_size == cls.segment_size
-            assert len(cls.bounds) == cls.data_size
-
-        @classmethod
-        def to_curve(cls, in_data):
-            curve_type = escape_curve.get_curve_class(in_angles_to_points_fun)
-            return curve_type(in_data, cls.max_curve_len/len(in_data))
 
         @classmethod
         def evaluate_data(cls, in_data):
-            return cls.evaluate_curve(cls.to_curve(in_data))
+            return cls.evaluate_curve(data_representation.to_curve(in_data))
 
         @classmethod
         def generate_data(cls):
-            cls._check_data()
             RowType = collections.namedtuple(
                 'RowType', ['data', 'function_value', 'time'])
             res_data = []
@@ -46,7 +99,7 @@ def get_optimizer(in_angles_to_points_fun):
 
             opt_res = scipy.optimize.dual_annealing(
                 lambda x: cls.evaluate_data(x),
-                cls.bounds,
+                data_representation.bounds,
                 maxiter=cls.maxiter,
                 callback=callback_fun)
             res_data.append(
@@ -55,20 +108,21 @@ def get_optimizer(in_angles_to_points_fun):
 
         @classmethod
         def plot_curve(cls, curve_data, in_length, in_curve_color):
-            last_segment_num = int(in_length/curve_data.segment_size)
-            rem_len = in_length-last_segment_num*curve_data.segment_size
-            assert 0 <= rem_len < curve_data.segment_size
-            if len(curve_data.point_list) > last_segment_num:
+            last_node_num, lower_len, last_segment_len = \
+                find_last_node_num(curve_data, in_length)
+            rem_len = in_length-lower_len
+            assert 0 <= rem_len < last_segment_len
+            if len(curve_data.point_list) > last_node_num:
                 plt.plot(
-                    curve_data.x_list[last_segment_num:],
-                    curve_data.y_list[last_segment_num:],
+                    curve_data.x_list[last_node_num:],
+                    curve_data.y_list[last_node_num:],
                     color='lightgray')
-            pos_a = numpy.array(curve_data.point_list[last_segment_num])
-            pos_b = numpy.array(curve_data.point_list[last_segment_num+1])
-            pos_c = pos_a+(rem_len/curve_data.segment_size)*(pos_b-pos_a)
-            used_x_list = list(curve_data.x_list[0:last_segment_num+1]) + \
+            pos_a = numpy.array(curve_data.point_list[last_node_num])
+            pos_b = numpy.array(curve_data.point_list[last_node_num+1])
+            pos_c = pos_a+(rem_len/last_segment_len)*(pos_b-pos_a)
+            used_x_list = list(curve_data.x_list[0:last_node_num+1]) + \
                 [pos_a[0], pos_c[0]]
-            used_y_list = list(curve_data.y_list[0:last_segment_num+1]) + \
+            used_y_list = list(curve_data.y_list[0:last_node_num+1]) + \
                 [pos_a[1], pos_c[1]]
             plt.plot(used_x_list, used_y_list, color=in_curve_color)
     return Optimizer
@@ -80,22 +134,17 @@ def _init_figure():
     plt.axis('off')
 
 
-def get_example_with_single_shape(in_angles_to_points_fun):
-    class ExampleWithSingleShape(get_optimizer(in_angles_to_points_fun)):
+def get_example_with_single_shape(data_representation):
+    class ExampleWithSingleShape(get_optimizer(data_representation)):
         maxiter = 1000
-        data_size = 30
-        max_curve_len = 2
-        segment_size = max_curve_len/data_size
-        bounds = [
-            (numpy.radians(-180), numpy.radians(180)) for _ in range(data_size)]
 
         @classmethod
-        def evaluate_curve(cls, curve):
-            return curve.get_max_len_inside(cls.shape)
+        def evaluate_curve(cls, curve_data):
+            return curve_data.get_max_len_inside(cls.shape)
 
         @classmethod
         def plot_state(cls, in_data, curve_color):
-            cur_curve = cls.to_curve(in_data)
+            cur_curve = data_representation.to_curve(in_data)
             _init_figure()
             cls.shape.plot(facecolor='lightgreen', edgecolor='green')
             cls.plot_curve(
@@ -104,9 +153,8 @@ def get_example_with_single_shape(in_angles_to_points_fun):
     return ExampleWithSingleShape
 
 
-def get_unit_ball_example(in_angles_to_points_fun):
-    class UnitBallExample(get_example_with_single_shape(
-            in_angles_to_points_fun)):
+def get_unit_ball_example(data_representation):
+    class UnitBallExample(get_example_with_single_shape(data_representation)):
         shape = plotable_convex_shapes.Wheel([0, 0], 1)
 
         @classmethod
@@ -117,19 +165,18 @@ def get_unit_ball_example(in_angles_to_points_fun):
     return UnitBallExample
 
 
-def get_unit_ball_fixed_direction_example(in_angles_to_points_fun):
-    class UnitBallFixedDirectionExample(
-            get_unit_ball_example(in_angles_to_points_fun)):
-        @classmethod
-        def to_curve(cls, in_data):
-            angle_list = numpy.insert(in_data, 0, 0, axis=0)
-            return super().to_curve(angle_list)
-    return UnitBallFixedDirectionExample
+# def get_unit_ball_fixed_direction_example(in_angles_to_points_fun):
+#     class UnitBallFixedDirectionExample(
+#             get_unit_ball_example(in_angles_to_points_fun)):
+#         @classmethod
+#         def to_curve(cls, in_data):
+#             angle_list = numpy.insert(in_data, 0, 0, axis=0)
+#             return super().to_curve(angle_list)
+#     return UnitBallFixedDirectionExample
 
 
-def get_rectangle_example(in_angles_to_points_fun):
-    class RectangleExample(
-            get_example_with_single_shape(in_angles_to_points_fun)):
+def get_rectangle_example(data_representation):
+    class RectangleExample(get_example_with_single_shape(data_representation)):
         shape = plotable_convex_shapes.Rectangle([0, 0], 2, 1.8)
 
         @classmethod
@@ -140,14 +187,9 @@ def get_rectangle_example(in_angles_to_points_fun):
     return RectangleExample
 
 
-def get_example_with_multiple_shapes(in_angles_to_points_fun):
-    class ExampleWithMultipleShapes(get_optimizer(in_angles_to_points_fun)):
-        maxiter = 40
-        data_size = 50
-        max_curve_len = 3
-        segment_size = max_curve_len/data_size
-        bounds = [
-            (numpy.radians(-180), numpy.radians(180)) for _ in range(data_size)]
+def get_example_with_multiple_shapes(data_representation):
+    class ExampleWithMultipleShapes(get_optimizer(data_representation)):
+        maxiter = 400
 
         @classmethod
         def evaluate_curve_max(cls, curve, in_iter_limit):
@@ -159,15 +201,14 @@ def get_example_with_multiple_shapes(in_angles_to_points_fun):
 
         @classmethod
         def evaluate_data_max(cls, in_data, in_iter_limit=3):
-            return cls.evaluate_curve_max(cls.to_curve(in_data), in_iter_limit)
+            return cls.evaluate_curve_max(data_representation.to_curve(in_data), in_iter_limit)
 
         @classmethod
         def evaluate_data_sum(cls, in_data, in_iter_limit=3):
-            return cls.evaluate_curve_sum(cls.to_curve(in_data), in_iter_limit)
+            return cls.evaluate_curve_sum(data_representation.to_curve(in_data), in_iter_limit)
 
         @classmethod
         def generate_data(cls):
-            cls._check_data()
             RowType = collections.namedtuple(
                 'RowType', ['data', 'function_value', 'time'])
             res_data = []
@@ -184,7 +225,7 @@ def get_example_with_multiple_shapes(in_angles_to_points_fun):
 
             res_sum = scipy.optimize.dual_annealing(
                 lambda x: cls.evaluate_data_sum(x),
-                cls.bounds,
+                data_representation.bounds,
                 maxiter=cls.maxiter,
                 callback=callback_fun)
             res_data.append(RowType(
@@ -192,7 +233,7 @@ def get_example_with_multiple_shapes(in_angles_to_points_fun):
                 time.time()-start_time))
             res_max = scipy.optimize.dual_annealing(
                 lambda x: cls.evaluate_data_max(x),
-                cls.bounds,
+                data_representation.bounds,
                 maxiter=40,
                 callback=callback_fun,
                 x0=res_sum.x)
@@ -203,7 +244,7 @@ def get_example_with_multiple_shapes(in_angles_to_points_fun):
 
         @classmethod
         def plot_state(cls, in_data, curve_color):
-            cur_curve = cls.to_curve(in_data)
+            cur_curve = data_representation.to_curve(in_data)
             _init_figure()
             # for _ in cls.shapes:
             #     _.plot(facecolor='none', edgecolor='green')
@@ -257,9 +298,9 @@ def _get_data_for_halfplane(in_rotation_num):
     return res_list
 
 
-def get_strip_example(in_angles_to_points_fun):
+def get_strip_example(data_representation):
     class StripExample(
-            get_example_with_multiple_shapes(in_angles_to_points_fun)):
+            get_example_with_multiple_shapes(data_representation)):
         shapes = _get_data_for_strip(60, 25)
 
         @classmethod
@@ -270,16 +311,10 @@ def get_strip_example(in_angles_to_points_fun):
     return StripExample
 
 
-def get_halfplane_example(in_angles_to_points_fun):
+def get_halfplane_example(data_representation):
     class HalfplaneExample(
-            get_example_with_multiple_shapes(in_angles_to_points_fun)):
-        shapes = _get_data_for_halfplane(70)
-        maxiter = 250
-        data_size = 80
-        max_curve_len = 9
-        segment_size = max_curve_len/data_size
-        bounds = [
-            (numpy.radians(-180), numpy.radians(180)) for _ in range(data_size)]
+            get_example_with_multiple_shapes(data_representation)):
+        shapes = _get_data_for_halfplane(30)#70
 
         @classmethod
         def _set_limits(_):
@@ -291,7 +326,7 @@ def get_halfplane_example(in_angles_to_points_fun):
 
 
 def generate_animation_data(
-        optimiser, tex_propety_name, curve_color):
+        optimiser, tex_propety_name, curve_color, anim_params=None):
     cur_paths = op.OutputPaths(tex_propety_name)
     optimisation_data = optimiser.generate_data()
     for (frame_number, cur_data) in enumerate(optimisation_data):
@@ -303,7 +338,11 @@ def generate_animation_data(
     short_path = str(cur_paths.get_short_pdf_path(-1))
     assert short_path.endswith('_-1.pdf')
     short_path = short_path[0:-6]
-    tex_str = '\\animategraphics[autoplay]{20}{' + \
+
+    if anim_params is None:
+        anim_params = '[autoplay]'
+
+    tex_str = '\\animategraphics'+anim_params+'{20}{' + \
               short_path+'}' + \
               '{0}'+f'{{{len(optimisation_data)-1}}}'
     with open(
@@ -336,12 +375,16 @@ def _save_tex_str_conv_plot(in_paths):
         tex_file.write(tex_str)
 
 
-def create_comparison_conv_plot(in_logo_data, in_azimuth_data, in_paths):
+def create_comparison_conv_plot(in_data_dict, in_paths):
     _init_conv_plot()
-    _plot_conv_data(in_logo_data, ps.LOGO_COLOR, 'LOGO')
-    _plot_conv_data(in_azimuth_data, ps.AZIMUTH_COLOR, 'azymut')
+    for (cur_name, cur_data) in in_data_dict.items():
+        _plot_conv_data(
+            cur_data, get_curve_color(cur_name),
+            get_curve_name(cur_name))
     plt.legend(loc="upper right")
     plt.xlabel('[s]')
+    y_limits = plt.gca().get_ylim()
+    plt.gca().set_ylim([y_limits[0], 2])
     plt.savefig(
         in_paths.get_pdf_file_path(0),
         bbox_inches='tight', pad_inches=0.01)
@@ -349,23 +392,77 @@ def create_comparison_conv_plot(in_logo_data, in_azimuth_data, in_paths):
     _save_tex_str_conv_plot(in_paths)
 
 
+def apply_dict(in_tex_name, in_dict):
+    res = None
+    for (cur_key, cur_val) in in_dict.items():
+        if cur_key in in_tex_name:
+            for _ in in_dict.keys():
+                if cur_key != _:
+                    assert _ not in in_tex_name
+            res = cur_val
+            break
+    assert res is not None
+    return res
+
+
+def get_representation_class(in_tex_name):
+    res_dict = {
+        'Logo': get_angle_curve_data_representation(escape_curve.LogoCurve),
+        'Azimuth':
+            get_angle_curve_data_representation(escape_curve.AzimuthCurve),
+        'Point': PointCurveDataRepresentation,
+        'Shift': ShiftCurveDataRepresentation}
+
+    return apply_dict(in_tex_name, res_dict)
+
+
+def get_curve_color(in_tex_name):
+    res_dict = {
+        'Logo': ps.LOGO_COLOR,
+        'Azimuth': ps.AZIMUTH_COLOR,
+        'Point': ps.POINT_COLOR,
+        'Shift': ps.SHIFT_COLOR}
+
+    return apply_dict(in_tex_name, res_dict)
+
+
+def get_curve_name(in_tex_name):
+    res_dict = {
+        'Logo': 'LOGO',
+        'Azimuth': 'azymut',
+        'Point': 'naiwny',
+        'Shift': 'SHIFT'}
+
+    return apply_dict(in_tex_name, res_dict)
+
+
 def make_single_shape_plots(
         in_example_fun,
-        logo_tex_name,
-        azimuth_tex_name,
-        conv_plot_tex_name):
-    logo_data = generate_animation_data(
-        in_example_fun(curve.angles_to_points_logo),
-        logo_tex_name,
-        ps.LOGO_COLOR)
+        in_tex_name_list,
+        conv_plot_tex_name, anim_params=None):
+    def get_representation_params(in_tex_name):
+        angle_data = (30, 2)
+        res_dict = {
+            'Logo': angle_data,
+            'Azimuth': angle_data,
+            'Point': (60, -1, 1),
+            'Shift': (60, -0.1, 0.1)}
 
-    azimuth_data = generate_animation_data(
-        in_example_fun(curve.angles_to_points_azimuth),
-        azimuth_tex_name,
-        ps.AZIMUTH_COLOR)
+        return apply_dict(in_tex_name, res_dict)
+
+    data_dict = {}
+    for cur_tex_name in in_tex_name_list:
+        print(cur_tex_name)
+        cur_representation = get_representation_class(cur_tex_name)(
+            *get_representation_params(cur_tex_name))
+        data_dict[cur_tex_name] = generate_animation_data(
+            in_example_fun(cur_representation),
+            cur_tex_name,
+            get_curve_color(cur_tex_name),
+            anim_params)
 
     create_comparison_conv_plot(
-        logo_data, azimuth_data,
+        data_dict,
         op.OutputPaths(conv_plot_tex_name))
 
 
@@ -387,31 +484,48 @@ def make_multiple_shapes_plots(in_example_class, tex_name, conv_plot_tex_name):
     _save_tex_str_conv_plot(conv_paths)
 
 
-make_single_shape_plots(
-    get_unit_ball_example,
-    'escapeFromCircleLogoTex',
-    'escapeFromCircleAzimuthTex',
-    'escapeFromCircleConvPlotTex')
+# make_single_shape_plots(
+#     get_unit_ball_example,
+#     ['escapeFromCirclePointTex',
+#      'escapeFromCircleShiftTex',
+#      'escapeFromCircleLogoTex',
+#      'escapeFromCircleAzimuthTex'],
+#     'escapeFromCircleConvPlotTex',
+#     '[autoplay,width=\\textwidth]')
+#
+#
+# make_single_shape_plots(
+#     get_rectangle_example,
+#     ['escapeFromRectanglePointTex',
+#      'escapeFromRectangleShiftTex',
+#      'escapeFromRectangleLogoTex',
+#      'escapeFromRectangleAzimuthTex'],
+#     'escapeFromRectangleConvPlotTex',
+#     '[autoplay,width=\\textwidth]')
 
-make_single_shape_plots(
-    get_unit_ball_fixed_direction_example,
-    'escapeFromCircleLogoFixedTex',
-    'escapeFromCircleAzimuthFixedTex',
-    'escapeFromCircleConvPlotFixedTex')
+# make_single_shape_plots(
+#     get_unit_ball_fixed_direction_example,
+#     'escapeFromCircleLogoFixedTex',
+#     'escapeFromCircleAzimuthFixedTex',
+#     'escapeFromCircleConvPlotFixedTex')
+#
+#
+# make_multiple_shapes_plots(
+#         get_strip_example(curve.angles_to_points_azimuth),
+#         'escapeFromStripTex',
+#         'escapeFromStripConvPlotTex')
 
-make_single_shape_plots(
-    get_rectangle_example,
-    'escapeFromRectangleLogoTex',
-    'escapeFromRectangleAzimuthTex',
-    'escapeFromRectangleConvPlotTex')
+
+
+# AZIMUTH_DATA_REPRESENTATION = get_angle_curve_data_representation(escape_curve.AzimuthCurve)
+#
+# make_multiple_shapes_plots(
+#         get_halfplane_example(AZIMUTH_DATA_REPRESENTATION(9, 5)),
+#         'escapeFromHalfplaneTex',
+#         'escapeFromHalfplaneConvPlotTex')
 
 
 make_multiple_shapes_plots(
-        get_strip_example(curve.angles_to_points_azimuth),
-        'escapeFromStripTex',
-        'escapeFromStripConvPlotTex')
-
-make_multiple_shapes_plots(
-        get_halfplane_example(curve.angles_to_points_azimuth),
-        'escapeFromHalfplaneTex',
+        get_halfplane_example(ShiftCurveDataRepresentation(70, -0.1, 0.1)),
+        'escapeFromHalfplaneShiftTex',
         'escapeFromHalfplaneConvPlotTex')

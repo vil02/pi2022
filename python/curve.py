@@ -95,3 +95,12 @@ class PointCurve(_AbstractCurve):
     """represetns a zig-zag-curvestarting at the point (0, 0)"""
     def __init__(self, in_point_list):
         self._point_list = [numpy.array([0, 0])]+in_point_list
+
+
+class ShiftCurve(_AbstractCurve):
+    def __init__(self, in_shift_list):
+        self._point_list = [numpy.array([0.0, 0.0])]
+        cur_pos = numpy.array([0.0, 0.0])
+        for cur_shift in in_shift_list:
+            cur_pos += cur_shift
+            self._point_list.append(cur_pos)

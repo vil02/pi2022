@@ -23,3 +23,4 @@ def get_curve_class(in_curve_class):
 LogoCurve = get_curve_class(curve.LogoCurve)
 AzimuthCurve = get_curve_class(curve.AzimuthCurve)
 PointCurve = get_curve_class(curve.PointCurve)
+ShiftCurve = get_curve_class(curve.ShiftCurve)

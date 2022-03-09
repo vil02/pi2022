@@ -81,3 +81,4 @@ def get_curve_class(in_curve_class):
 LogoCurve = get_curve_class(extendable_curve.LogoCurve)
 AzimuthCurve = get_curve_class(extendable_curve.AzimuthCurve)
 PointCurve = get_curve_class(extendable_curve.PointCurve)
+ShiftCurve = get_curve_class(extendable_curve.ShiftCurve)

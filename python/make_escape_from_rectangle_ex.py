@@ -4,6 +4,7 @@ generates TeX data for escape from rectangle explanation
 import matplotlib.pyplot as plt
 
 import output_paths as op
+import project_styles as ps
 
 
 def _init_figure():
@@ -18,7 +19,7 @@ _init_figure()
 D_X = 1
 D_Y = 0.9
 plt.gca().add_patch(plt.Rectangle(
-    (-D_X, -D_Y), 2*D_X, 2*D_Y, facecolor='lightgreen', edgecolor='green'))
+    (-D_X, -D_Y), 2*D_X, 2*D_Y, **ps.CONVEX_COLORS))
 plt.plot(0, 0, color='black', marker='o', markersize=5)
 PLOT_R = 1.2
 plt.gca().set_xlim([-PLOT_R, PLOT_R])

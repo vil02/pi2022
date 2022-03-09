@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 import output_paths as op
 import plotable_convex_shapes as pcs
+import project_styles as ps
 
 
 def _init_figure():
@@ -17,7 +18,7 @@ OUTPUT_PATHS = op.OutputPaths('escapeFromCircleExTex')
 
 _init_figure()
 WHEEL = pcs.Wheel((0, 0), 1)
-WHEEL.plot(facecolor='lightgreen', edgecolor='green')
+WHEEL.plot(**ps.CONVEX_COLORS)
 plt.plot(0, 0, color='black', marker='o', markersize=5)
 PLOT_R = 1.2
 plt.gca().set_xlim([-PLOT_R, PLOT_R])

@@ -6,6 +6,7 @@ import numpy
 import scipy.interpolate
 
 import output_paths as op
+import project_styles as ps
 
 
 def _get_raw_convex_shape_a():
@@ -84,7 +85,7 @@ plt.close()
 
 _init_figure()
 for _ in CONVEX_SHAPES:
-    plot_shape(_, facecolor='lightgreen', edgecolor='green')
+    plot_shape(_, **ps.CONVEX_COLORS)
 
 
 for _ in NONCONVEX_SHAPES:

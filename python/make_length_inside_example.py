@@ -9,6 +9,7 @@ import scipy.spatial
 
 import output_paths as op
 import curve
+import project_styles as ps
 
 
 def _get_output_paths_convex():
@@ -88,7 +89,7 @@ def _draw_frame(in_frame_num):
 
     _init_figure()
     plot_shape(
-        _get_raw_convex_shape(), facecolor='lightgreen', edgecolor='green')
+        _get_raw_convex_shape(), **ps.CONVEX_COLORS)
     plt.plot(
         example_curve.x_list,
         example_curve.y_list,

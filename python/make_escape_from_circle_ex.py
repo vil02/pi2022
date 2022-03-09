@@ -26,10 +26,10 @@ plt.gca().set_ylim([-PLOT_R, PLOT_R])
 plt.savefig(
     OUTPUT_PATHS.get_pdf_file_path(0),
     bbox_inches='tight', pad_inches=0.01)
+plt.close()
 
 TEX_STR = \
     f'\\includegraphics{{{OUTPUT_PATHS.get_short_pdf_path(0)}}}\n'
 with open(
         OUTPUT_PATHS.get_tex_file_path(), 'w', encoding='utf-8') as tex_file:
     tex_file.write(TEX_STR)
-plt.close()

@@ -1,5 +1,5 @@
 """
-generates TeX data for escape from stripexplanation
+generates TeX data for escape from strip explanation
 """
 import itertools
 import matplotlib.pyplot as plt

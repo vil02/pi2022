@@ -1,91 +1,23 @@
 import collections
+import time
 import scipy.optimize
 import numpy
 import matplotlib.pyplot as plt
-import time
+
 
 import output_paths as op
-import escape_curve
+import curve_representations as cr
 import plotable_convex_shapes
 import project_styles as ps
 import rotations
 import tex_string_utils as tsu
 
 
-class PointCurveDataRepresentation:
-    def __init__(self, in_data_size, min_val, max_val):
-        assert in_data_size % 2 == 0
-        self._data_size = in_data_size
-        self._bounds = [(min_val, max_val) for _ in range(in_data_size)]
-
-    @property
-    def bounds(self):
-        return self._bounds
-
-    def to_curve(self, in_data):
-        assert len(in_data) == self._data_size
-        point_list = [
-            numpy.array(in_data[_:_+2]) for _ in range(0, self._data_size, 2)]
-        return escape_curve.PointCurve(point_list)
-
-
-class ShiftCurveDataRepresentation:
-    def __init__(self, in_data_size, min_val, max_val):
-        assert in_data_size % 2 == 0
-        self._data_size = in_data_size
-        self._bounds = [(min_val, max_val) for _ in range(in_data_size)]
-
-    @property
-    def bounds(self):
-        return self._bounds
-
-    def to_curve(self, in_data):
-        assert len(in_data) == self._data_size
-        shift_list = [
-            numpy.array(in_data[_:_+2]) for _ in range(0, self._data_size, 2)]
-        return escape_curve.ShiftCurve(shift_list)
-
-
-def get_angle_curve_data_representation(in_curve_class):
-    class AngleCurveDataRepresentation:
-        def __init__(self, data_size, max_curve_len):
-            self._segment_size = max_curve_len/data_size
-            single_bound = (numpy.radians(-180), numpy.radians(180))
-            self._bounds = [single_bound for _ in range(data_size)]
-
-        @property
-        def bounds(self):
-            return self._bounds
-
-        def to_curve(self, in_angle_data):
-            return in_curve_class(in_angle_data, self._segment_size)
-
-    return AngleCurveDataRepresentation
-
-
-def get_angle_curve_fixed_data_representation(in_curve_class):
-    class AngleCurveFixedDataRepresentation:
-        def __init__(self, data_size, max_curve_len):
-            self._segment_size = max_curve_len/(data_size+1)
-            single_bound = (numpy.radians(-180), numpy.radians(180))
-            self._bounds = [single_bound for _ in range(data_size)]
-
-        @property
-        def bounds(self):
-            return self._bounds
-
-        def to_curve(self, in_angle_data):
-            angle_list = numpy.insert(in_angle_data, 0, 0, axis=0)
-            return in_curve_class(angle_list, self._segment_size)
-
-    return AngleCurveFixedDataRepresentation
-
-
 def find_last_node_num(curve_data, in_len):
     cur_len = 0
     prev_len = -1
     cur_node_num = 0
-    assert 0 < in_len
+    assert in_len > 0
     while cur_len < in_len:
         cur_shift = curve_data[cur_node_num+1]-curve_data[cur_node_num]
         prev_len = cur_len
@@ -117,7 +49,7 @@ def get_optimizer(data_representation):
                     RowType(in_data, in_fun_val, time.time()-start_time))
 
             opt_res = scipy.optimize.dual_annealing(
-                lambda x: cls.evaluate_data(x),
+                cls.evaluate_data,
                 data_representation.bounds,
                 maxiter=cls.maxiter,
                 callback=callback_fun,
@@ -237,7 +169,7 @@ def get_example_with_multiple_shapes(data_representation):
             if x0 is not None:
                 initial_temp = 10
             res_sum = scipy.optimize.dual_annealing(
-                lambda x: cls.evaluate_data_sum(x),
+                cls.evaluate_data_sum,
                 data_representation.bounds,
                 maxiter=cls.maxiter,
                 callback=callback_fun,
@@ -246,7 +178,7 @@ def get_example_with_multiple_shapes(data_representation):
                 res_sum.x, cls.evaluate_data_max(res_sum.x),
                 time.time()-start_time))
             res_max = scipy.optimize.dual_annealing(
-                lambda x: cls.evaluate_data_max(x),
+                cls.evaluate_data_max,
                 data_representation.bounds,
                 maxiter=40,
                 callback=callback_fun,
@@ -467,29 +399,19 @@ def make_multiple_shapes_plots(
     return opt_data
 
 
-LogoRepresentation = \
-    get_angle_curve_data_representation(escape_curve.LogoCurve)
-AzimuthRepresentation = \
-    get_angle_curve_data_representation(escape_curve.AzimuthCurve)
-
 CIRCLE_EXAMPLES = {
     'escapeFromCircleLogoTex':
-        get_unit_ball_example(LogoRepresentation(30, 2)),
+        get_unit_ball_example(cr.LogoRepresentation(30, 2)),
     'escapeFromCircleAzimuthTex':
-        get_unit_ball_example(AzimuthRepresentation(30, 2))}
+        get_unit_ball_example(cr.AzimuthRepresentation(30, 2))}
 
 make_single_shape_plots(CIRCLE_EXAMPLES, 'escapeFromCircleConvPlotTex')
 
-LogoRepresentationFix = \
-    get_angle_curve_fixed_data_representation(escape_curve.LogoCurve)
-AzimuthRepresentationFix = \
-    get_angle_curve_fixed_data_representation(escape_curve.AzimuthCurve)
-
 CIRCLE_EXAMPLES_FIXED = {
     'escapeFromCircleLogoFixedTex':
-        get_unit_ball_example(LogoRepresentationFix(30, 2)),
+        get_unit_ball_example(cr.LogoRepresentationFix(30, 2)),
     'escapeFromCircleAzimuthFixedTex':
-        get_unit_ball_example(AzimuthRepresentationFix(30, 2))}
+        get_unit_ball_example(cr.AzimuthRepresentationFix(30, 2))}
 
 make_single_shape_plots(
     CIRCLE_EXAMPLES_FIXED, 'escapeFromCircleConvPlotFixedTex')
@@ -497,13 +419,13 @@ make_single_shape_plots(
 
 RECTANGLE_EXAMPLES = {
     'escapeFromRectangleLogoTex':
-        get_rectangle_example(LogoRepresentation(30, 2)),
+        get_rectangle_example(cr.LogoRepresentation(30, 2)),
     'escapeFromRectangleAzimuthTex':
-        get_rectangle_example(AzimuthRepresentation(30, 2))}
+        get_rectangle_example(cr.AzimuthRepresentation(30, 2))}
 
 make_single_shape_plots(RECTANGLE_EXAMPLES, 'escapeFromRectangleConvPlotTex')
 
-HALFPLANE_AZIMUTH_REP = AzimuthRepresentation(20, 7)
+HALFPLANE_AZIMUTH_REP = cr.AzimuthRepresentation(20, 7)
 
 AZIMUTH_HALFPLANE_RES = make_multiple_shapes_plots(
         get_halfplane_example(HALFPLANE_AZIMUTH_REP),
@@ -525,7 +447,7 @@ RAW_RES = to_raw_list(AZIMUTH_RES_CURVE.point_list[1:])
 
 LIMIT = 1.2*max(abs(_) for _ in RAW_RES)
 
-HALFPLANE_POINT_RES = PointCurveDataRepresentation(len(RAW_RES), -LIMIT, LIMIT)
+HALFPLANE_POINT_RES = cr.PointCurveRepresentation(len(RAW_RES), -LIMIT, LIMIT)
 make_multiple_shapes_plots(
         get_halfplane_example(HALFPLANE_POINT_RES),
         'escapeFromHalfplanePointTex',

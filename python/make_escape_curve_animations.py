@@ -247,7 +247,7 @@ def _get_data_for_halfplane(in_rotation_num):
 def get_strip_example(data_representation):
     class StripExample(
             get_example_with_multiple_shapes(data_representation)):
-        shapes = _get_data_for_strip(60, 25)
+        shapes = _get_data_for_strip(30, 15)
 
         @classmethod
         def _set_limits(_):
@@ -367,6 +367,7 @@ def get_curve_name(in_tex_name):
 def make_single_shape_plots(
         in_example_dict,
         conv_plot_tex_name, anim_params=None):
+    return None#######################################################################
     data_dict = {}
     for (cur_tex_name, cur_example) in in_example_dict.items():
         data_dict[cur_tex_name] = generate_animation_data(
@@ -399,6 +400,57 @@ def make_multiple_shapes_plots(
     return opt_data
 
 
+def two_step_scheme(
+        in_get_example_fun,
+        in_first_step_representation,
+        in_first_step_tex_name, in_second_step_tex_name,
+        in_conv_plot_tex_name):
+    def to_raw_list(in_point_list):
+        res_list = []
+        for _ in in_point_list:
+            res_list.append(_[0])
+            res_list.append(_[1])
+        return numpy.array(res_list)
+
+    def shift_second_step_time(in_first_step_res, in_second_step_res):
+        res = []
+        SimpleRowType = collections.namedtuple(
+            'SimpleRowType', ['function_value', 'time'])
+        first_step_end_time = in_first_step_res[-1].time
+        for _ in in_second_step_res:
+            res.append(SimpleRowType(
+                _.function_value, _.time+first_step_end_time))
+        return res
+
+    first_step_res = generate_animation_data(
+        in_get_example_fun(in_first_step_representation),
+        in_first_step_tex_name,
+        get_curve_color(in_first_step_tex_name),
+        None, None)
+
+    first_step_sol = \
+        in_first_step_representation.to_curve(first_step_res[-1].data)
+    raw_first_step_opt = to_raw_list(first_step_sol.point_list[1:])
+    pos_limit_min = 1.1*min(_ for _ in raw_first_step_opt)
+    pos_limit_max = 1.1*max(_ for _ in raw_first_step_opt)
+
+    second_step_representation = cr.PointCurveRepresentation(
+        len(raw_first_step_opt), pos_limit_min, pos_limit_max)
+
+    second_step_res = generate_animation_data(
+        in_get_example_fun(second_step_representation),
+        in_second_step_tex_name,
+        get_curve_color(in_second_step_tex_name),
+        None, raw_first_step_opt)
+    second_step_res = shift_second_step_time(first_step_res, second_step_res)
+
+    opt_res_dict = {
+        in_first_step_tex_name: first_step_res,
+        in_second_step_tex_name: second_step_res}
+    create_comparison_conv_plot(
+        opt_res_dict, op.OutputPaths(in_conv_plot_tex_name))
+
+
 CIRCLE_EXAMPLES = {
     'escapeFromCircleLogoTex':
         get_unit_ball_example(cr.LogoRepresentation(30, 2)),
@@ -425,50 +477,20 @@ RECTANGLE_EXAMPLES = {
 
 make_single_shape_plots(RECTANGLE_EXAMPLES, 'escapeFromRectangleConvPlotTex')
 
-HALFPLANE_AZIMUTH_REP = cr.AzimuthRepresentation(20, 7)
+# two_step_scheme(
+#     get_strip_example,
+#     cr.AzimuthRepresentation(20, 2.5),
+#     'escapeFromStripAzimuthTex',
+#     'escapeFromStripPointTex',
+#     'escapeFromStripConvPlotTex')
 
-AZIMUTH_HALFPLANE_RES = make_multiple_shapes_plots(
-        get_halfplane_example(HALFPLANE_AZIMUTH_REP),
-        'escapeFromHalfplaneAzimuthTex',
-        'escapeFromHalfplaneConvPlotTex')
-
-
-AZIMUTH_RES_CURVE = HALFPLANE_AZIMUTH_REP.to_curve(AZIMUTH_HALFPLANE_RES[-1].data)
-
-def to_raw_list(in_point_list):
-    res_list = []
-    for _ in in_point_list:
-        res_list.append(_[0])
-        res_list.append(_[1])
-    print(in_point_list)
-    print(res_list)
-    return numpy.array(res_list)
-RAW_RES = to_raw_list(AZIMUTH_RES_CURVE.point_list[1:])
-
-LIMIT = 1.2*max(abs(_) for _ in RAW_RES)
-
-HALFPLANE_POINT_RES = cr.PointCurveRepresentation(len(RAW_RES), -LIMIT, LIMIT)
 make_multiple_shapes_plots(
-        get_halfplane_example(HALFPLANE_POINT_RES),
-        'escapeFromHalfplanePointTex',
-        'escapeFromHalfplaneConvPlotTex',
-        RAW_RES)
-# make_multiple_shapes_plots(
-#         get_strip_example(curve.angles_to_points_azimuth),
-#         'escapeFromStripTex',
-#         'escapeFromStripConvPlotTex')
+    get_strip_example(cr.AzimuthRepresentation(20, 2.5)),
+    'escapeFromStripAzimuthTex', 'escapeFromStripConvPlotTex', x0=None)
 
-
-
-# AZIMUTH_DATA_REPRESENTATION = get_angle_curve_data_representation(escape_curve.AzimuthCurve)
-#
-# make_multiple_shapes_plots(
-#         get_halfplane_example(AZIMUTH_DATA_REPRESENTATION(9, 5)),
-#         'escapeFromHalfplaneTex',
-#         'escapeFromHalfplaneConvPlotTex')
-
-
-# make_multiple_shapes_plots(
-#         get_halfplane_example(ShiftCurveDataRepresentation(70, -0.1, 0.1)),
-#         'escapeFromHalfplaneShiftTex',
-#         'escapeFromHalfplaneConvPlotTex')
+two_step_scheme(
+    get_halfplane_example,
+    cr.AzimuthRepresentation(20, 7),
+    'escapeFromHalfplaneAzimuthTex',
+    'escapeFromHalfplanePointTex',
+    'escapeFromHalfplaneConvPlotTex')

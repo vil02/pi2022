@@ -26,7 +26,7 @@ def _draw_halfplane():
 
 
 def _get_rectangle(**kwargs):
-    return plt.Rectangle((-4, -1), 8, 7, **kwargs)
+    return plt.Rectangle((-5.5, -1), 11, 6.5, **kwargs)
 
 
 def _draw_rectangle():
@@ -37,16 +37,19 @@ def _mark_pos():
     plt.plot(0, 0, marker='o', color='black', markersize=8)
 
 
+X_LIM = [-13, 13]
+Y_LIM = [-8, 7]
+
 _init_figure()
 _draw_halfplane()
-FIGURE_SAVER.save_fig()
+FIGURE_SAVER.save_fig(X_LIM, Y_LIM)
 plt.plot([-50, 50], [0, 0], color='black', linestyle='--')
-FIGURE_SAVER.save_fig()
+FIGURE_SAVER.save_fig(X_LIM, Y_LIM)
 
 _init_figure()
 _draw_rectangle()
 _mark_pos()
-FIGURE_SAVER.save_fig()
+FIGURE_SAVER.save_fig(X_LIM, Y_LIM)
 
 ANGLE_LIST = numpy.linspace(0, 2*numpy.pi, 5, False)
 
@@ -55,7 +58,7 @@ for _ in ANGLE_LIST:
     cur_x = arrow_len*numpy.cos(_)
     cur_y = arrow_len*numpy.sin(_)
     plt.arrow(0, 0, cur_x, cur_y, overhang=0.3, head_width=0.5, color='black')
-FIGURE_SAVER.save_fig()
+FIGURE_SAVER.save_fig(X_LIM, Y_LIM)
 
 _init_figure()
 COLOR_LIST = ['teal', 'maroon', 'blue', 'magenta', 'crimson']
@@ -67,7 +70,7 @@ for (cur_angle, cur_color) in zip(ANGLE_LIST, COLOR_LIST):
 
     plt.gca().add_patch(cur_patch)
 _mark_pos()
-FIGURE_SAVER.save_fig()
+FIGURE_SAVER.save_fig(X_LIM, Y_LIM)
 plt.close()
 
 tsu.save_simple_overprint_frame(OUTPUT_PATHS, FIGURE_SAVER.fig_num, 0.9)

@@ -10,11 +10,11 @@ class FigureSaver:
     def __init__(self, output_paths):
         self._output_paths = output_paths
 
-    def save_fig(self):
+    def save_fig(self, in_xlim, in_ylim):
         """saves the current figre and increases the counter"""
         def _set_limits():
-            plt.gca().set_xlim([-13, 13])
-            plt.gca().set_ylim([-7.5, 7.5])
+            plt.gca().set_xlim(in_xlim)
+            plt.gca().set_ylim(in_ylim)
         _set_limits()
         plt.savefig(
             self._output_paths.get_pdf_file_path(self.fig_num),

@@ -323,7 +323,7 @@ def create_comparison_conv_plot(in_data_dict, in_paths):
     plt.legend(loc="upper right")
     plt.xlabel('[s]')
     y_limits = plt.gca().get_ylim()
-    plt.gca().set_ylim([y_limits[0], 2])
+    plt.gca().set_ylim([y_limits[0], 2*y_limits[0]])
     plt.savefig(
         in_paths.get_pdf_file_path(0),
         bbox_inches='tight', pad_inches=0.01)
@@ -367,7 +367,7 @@ def get_curve_name(in_tex_name):
 def make_single_shape_plots(
         in_example_dict,
         conv_plot_tex_name, anim_params=None):
-    return None#######################################################################
+    #return None#######################################################################
     data_dict = {}
     for (cur_tex_name, cur_example) in in_example_dict.items():
         data_dict[cur_tex_name] = generate_animation_data(
@@ -391,7 +391,7 @@ def make_multiple_shapes_plots(
         opt_data, get_curve_color(tex_name), get_curve_name(tex_name))
     plt.xlabel('[s]')
     y_limits = plt.gca().get_ylim()
-    plt.gca().set_ylim([y_limits[0], 8])
+    plt.gca().set_ylim([y_limits[0], 2*y_limits[0]])
     plt.savefig(
         conv_paths.get_pdf_file_path(0),
         bbox_inches='tight', pad_inches=0.01)

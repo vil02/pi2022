@@ -29,8 +29,7 @@ def fixture_example_square_azimuth_curve():
 
 @pytest.mark.parametrize(
     'example_square_curve_str',
-    ['example_square_azimuth_curve',
-     'example_square_logo_curve'])
+    ['example_square_azimuth_curve', 'example_square_logo_curve'])
 def test_x_list(example_square_curve_str, request):
     """test of the x_list"""
     example_square_curve = request.getfixturevalue(example_square_curve_str)
@@ -39,8 +38,7 @@ def test_x_list(example_square_curve_str, request):
 
 @pytest.mark.parametrize(
     'example_square_curve_str',
-    ['example_square_azimuth_curve',
-     'example_square_logo_curve'])
+    ['example_square_azimuth_curve', 'example_square_logo_curve'])
 def test_y_list(example_square_curve_str, request):
     """test of the y_list"""
     example_square_curve = request.getfixturevalue(example_square_curve_str)
@@ -56,8 +54,7 @@ def test_angle_list(angle_curve_class):
 
 
 @pytest.mark.parametrize(
-    'in_logo_angles',
-    [numpy.random.rand(20) for _ in range(5)])
+    'in_logo_angles', [numpy.random.rand(20) for _ in range(5)])
 def test_logo_agnles_to_azimuth_angles(in_logo_angles):
     """test of the function logo_angles_to_azimuth_angles"""
     segment_size = 3.2

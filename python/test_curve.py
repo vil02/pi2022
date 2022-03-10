@@ -48,6 +48,14 @@ def test_y_list(example_square_curve_str, request):
 
 
 @pytest.mark.parametrize(
+    'angle_curve_class', [curve.LogoCurve, curve.AzimuthCurve])
+def test_angle_list(angle_curve_class):
+    """tests the angle_list property"""
+    example_angles = [10, -30, 90, 100]
+    assert angle_curve_class(example_angles, 1).angle_list == example_angles
+
+
+@pytest.mark.parametrize(
     'in_logo_angles',
     [numpy.random.rand(20) for _ in range(5)])
 def test_logo_agnles_to_azimuth_angles(in_logo_angles):

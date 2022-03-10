@@ -98,6 +98,10 @@ class PointCurve(_AbstractCurve):
 
 
 class ShiftCurve(_AbstractCurve):
+    """
+    represents a zig-zag-curve starting at the point (0, 0)
+    generated from a list of shifts
+    """
     def __init__(self, in_shift_list):
         self._point_list = [numpy.array([0.0, 0.0])]
         cur_pos = numpy.array([0.0, 0.0])

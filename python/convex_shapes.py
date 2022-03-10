@@ -9,7 +9,7 @@ def norm_sq(in_vec):
     return numpy.dot(in_vec, in_vec)
 
 
-class Wheel:
+class Wheel:  # pylint: disable=too-few-public-methods
     """represents a Wheel"""
     def __init__(self, in_center, in_radius):
         self._radius_sq = in_radius**2
@@ -19,7 +19,7 @@ class Wheel:
         return norm_sq(in_pos-self.center) <= self._radius_sq
 
 
-class Rectangle:
+class Rectangle:  # pylint: disable=too-few-public-methods
     """represents a rectangle"""
     def __init__(self, in_center, in_width, in_height):
         self.center = in_center

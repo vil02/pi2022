@@ -9,6 +9,7 @@ import escape_curve
 import plotable_convex_shapes
 import project_styles as ps
 import rotations
+import tex_string_utils as tsu
 
 
 class PointCurveDataRepresentation:
@@ -348,19 +349,12 @@ def generate_animation_data(
             cur_paths.get_pdf_file_path(frame_number),
             bbox_inches='tight', pad_inches=0.01)
         plt.close()
-    short_path = str(cur_paths.get_short_pdf_path(-1))
-    assert short_path.endswith('_-1.pdf')
-    short_path = short_path[0:-6]
 
     if anim_params is None:
         anim_params = '[autoplay]'
-
-    tex_str = '\\animategraphics'+anim_params+'{20}{' + \
-              short_path+'}' + \
-              '{0}'+f'{{{len(optimisation_data)-1}}}'
-    with open(
-            cur_paths.get_tex_file_path(), 'w', encoding='utf-8') as tex_file:
-        tex_file.write(tex_str)
+    assert anim_params[0] == '[' and anim_params[-1] == ']'
+    tsu.save_animategraphics_str(
+        cur_paths, 20, anim_params[1:-1], 0, len(optimisation_data)-1)
 
     with open(
             cur_paths.get_general_file_path('_raw_res.txt'),
@@ -441,7 +435,6 @@ def get_curve_name(in_tex_name):
 def make_single_shape_plots(
         in_example_dict,
         conv_plot_tex_name, anim_params=None):
-    return None#this!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     data_dict = {}
     for (cur_tex_name, cur_example) in in_example_dict.items():
         data_dict[cur_tex_name] = generate_animation_data(
@@ -510,7 +503,7 @@ RECTANGLE_EXAMPLES = {
 
 make_single_shape_plots(RECTANGLE_EXAMPLES, 'escapeFromRectangleConvPlotTex')
 
-HALFPLANE_AZIMUTH_REP = AzimuthRepresentation(20, 6)
+HALFPLANE_AZIMUTH_REP = AzimuthRepresentation(20, 7)
 
 AZIMUTH_HALFPLANE_RES = make_multiple_shapes_plots(
         get_halfplane_example(HALFPLANE_AZIMUTH_REP),

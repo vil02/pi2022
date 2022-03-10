@@ -7,6 +7,7 @@ import scipy.interpolate
 
 import output_paths as op
 import project_styles as ps
+import tex_string_utils as tsu
 
 
 def _get_raw_convex_shape_a():
@@ -98,24 +99,5 @@ _set_limits()
 _call_save_fig(1)
 plt.close()
 
-TEX_STR = \
-    '\\begin{frame}\n' \
-    '  \\begin{center}\n' \
-    '    \\begin{overprint}\n'
-for _ in range(2):
-    cur_str = \
-        f'        \\onslide<{_+1}>' \
-        r'\centerline{\includegraphics[width=0.5\textwidth]{' \
-        f'{_get_output_paths().get_short_pdf_path(_)}' \
-        '}}\n'
-    TEX_STR += cur_str
-TEX_STR += \
-    '    \\end{overprint}\n' \
-    '  \\end{center}\n'
 
-TEX_STR += '\\end{frame}\n'
-
-TEX_FILE_PATH = _get_output_paths().get_tex_file_path()
-with open(
-        TEX_FILE_PATH, 'w', encoding='utf-8') as tex_file:
-    tex_file.write(TEX_STR)
+tsu.save_simple_overprint_frame(_get_output_paths(), 2, 0.5)

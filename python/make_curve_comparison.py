@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import curve
 import output_paths as op
 import project_styles as ps
+import tex_string_utils as tsu
 
 _PERTURBED_IND = 3
 
@@ -95,16 +96,10 @@ def _make_animation_data(
         plt.gca().set_ylim(limits[1])
         save_plot_to_pdf(frame_num, output_paths)
         plt.close()
-    short_path = str(output_paths.get_short_pdf_path(-1))
-    assert short_path.endswith('_-1.pdf')
-    short_path = short_path[0:-6]
 
-    tex_str = '\\animategraphics[autoplay,loop,width=\\textwidth]{15}{' + \
-              short_path+'}' + \
-              '{0}'+f'{{{len(frame_params)-1}}}'
-    with open(
-            output_paths.get_tex_file_path(), 'w', encoding='utf-8') as t_file:
-        t_file.write(tex_str)
+    tsu.save_animategraphics_str(
+        output_paths, 15,
+        'autoplay,loop,width=\\textwidth', 0, len(frame_params)-1)
 
 
 LOGO_ANGLE_LIST = [numpy.radians(_) for _ in [15, 20, -30, 40, 50, 40, -60]]

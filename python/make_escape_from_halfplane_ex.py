@@ -8,6 +8,8 @@ import numpy
 import output_paths as op
 import project_styles as ps
 import figure_saver as fs
+import tex_string_utils as tsu
+
 
 OUTPUT_PATHS = op.OutputPaths('escapeFromHalfplaneExTex')
 FIGURE_SAVER = fs.FigureSaver(OUTPUT_PATHS)
@@ -68,22 +70,4 @@ _mark_pos()
 FIGURE_SAVER.save_fig()
 plt.close()
 
-TEX_STR = \
-    '\\begin{frame}\n' \
-    '  \\begin{center}\n' \
-    '    \\begin{overprint}\n'
-
-for _ in range(FIGURE_SAVER.fig_num):
-    cur_str = \
-        f'        \\onslide<{_+1}>' \
-        r'\centerline{\includegraphics[width=0.9\textwidth]{' \
-        f'{OUTPUT_PATHS.get_short_pdf_path(_)}' \
-        '}}\n'
-    TEX_STR += cur_str
-TEX_STR += \
-    '    \\end{overprint}\n' \
-    '  \\end{center}\n'
-TEX_STR += '\\end{frame}\n'
-
-with open(OUTPUT_PATHS.get_tex_file_path(), 'w', encoding='utf-8') as tex_file:
-    tex_file.write(TEX_STR)
+tsu.save_simple_overprint_frame(OUTPUT_PATHS, FIGURE_SAVER.fig_num, 0.9)

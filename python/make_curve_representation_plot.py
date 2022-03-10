@@ -9,6 +9,7 @@ import numpy
 import curve
 import output_paths as op
 import project_styles as ps
+import tex_string_utils as tsu
 
 
 def mark_logo_angles(in_curve):
@@ -207,7 +208,4 @@ TEX_STR += '  \\end{overprint}\n'
 
 TEX_STR += '\\end{frame}\n'
 
-TEX_FILE_PATH = _get_output_paths().get_tex_file_path()
-with open(
-        TEX_FILE_PATH, 'w', encoding='utf-8') as tex_file:
-    tex_file.write(TEX_STR)
+tsu.save_to_tex_file(TEX_STR, _get_output_paths())

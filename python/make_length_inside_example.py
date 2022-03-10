@@ -10,6 +10,7 @@ import scipy.spatial
 import output_paths as op
 import curve
 import project_styles as ps
+import tex_string_utils as tsu
 
 
 def _get_output_paths_convex():
@@ -140,28 +141,9 @@ def _draw_frame(in_frame_num):
 NUMBER_OF_FRAMES = 15
 for _ in range(NUMBER_OF_FRAMES):
     _draw_frame(_)
+tsu.save_simple_overprint_frame(
+    _get_output_paths_convex(), NUMBER_OF_FRAMES, 0.5)
 
-TEX_STR_CONVEX = \
-    '\\begin{frame}\n' \
-    '  \\begin{center}\n' \
-    '    \\begin{overprint}\n'
-for _ in range(NUMBER_OF_FRAMES):
-    cur_str = \
-        f'        \\onslide<{_+1}>' \
-        r'\centerline{\includegraphics[width=0.5\textwidth]{' \
-        f'{_get_output_paths_convex().get_short_pdf_path(_)}' \
-        '}}\n'
-    TEX_STR_CONVEX += cur_str
-TEX_STR_CONVEX += \
-    '    \\end{overprint}\n' \
-    '  \\end{center}\n'
-
-TEX_STR_CONVEX += '\\end{frame}\n'
-
-with open(
-        _get_output_paths_convex().get_tex_file_path(),
-        'w', encoding='utf-8') as tex_file:
-    tex_file.write(TEX_STR_CONVEX)
 
 _init_figure()
 plot_shape(
@@ -183,7 +165,4 @@ TEX_STR_NONCONVEX = \
     '  \\end{center}\n' \
     '\\end{frame}\n'
 
-with open(
-        _get_output_paths_nonconvex().get_tex_file_path(),
-        'w', encoding='utf-8') as tex_file:
-    tex_file.write(TEX_STR_NONCONVEX)
+tsu.save_to_tex_file(TEX_STR_NONCONVEX, _get_output_paths_nonconvex())

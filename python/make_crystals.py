@@ -7,6 +7,7 @@ import random
 import matplotlib.pyplot as plt
 
 import output_paths as op
+import tex_string_utils as tsu
 
 
 class _Crystal:
@@ -249,19 +250,15 @@ for _ in range(2):
         '  \\end{center}\n' \
         '\\end{frame}\n'
 
-CORE_ANIM_NAME = str(_get_output_paths().get_short_pdf_path(-1))
-assert CORE_ANIM_NAME.endswith('_-1.pdf')
-CORE_ANIM_NAME = CORE_ANIM_NAME[0:-6]
+
+ANIM_STR = tsu.animategraphics_str(
+    _get_output_paths(), 15, 'autoplay,loop', 2, FRAME_LIMIT-1)
 
 TEX_STR += \
     '\\begin{frame}\n' + \
     '  \\begin{center}\n' + \
-    '    \\animategraphics[autoplay,loop]{20}' + \
-    f'{{{CORE_ANIM_NAME}}}{{2}}{{{FRAME_LIMIT-1}}}\n' + \
+    '    ' + ANIM_STR + '\n' + \
     '  \\end{center}\n' \
     '\\end{frame}\n'
 
-TEX_FILE_PATH = _get_output_paths().get_tex_file_path()
-with open(
-        TEX_FILE_PATH, 'w', encoding='utf-8') as tex_file:
-    tex_file.write(TEX_STR)
+tsu.save_to_tex_file(TEX_STR, _get_output_paths())

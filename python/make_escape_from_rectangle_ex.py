@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 import output_paths as op
 import project_styles as ps
+import tex_string_utils as tsu
 
 
 def _init_figure():
@@ -31,6 +32,4 @@ plt.close()
 
 TEX_STR = \
     f'\\includegraphics{{{OUTPUT_PATHS.get_short_pdf_path(0)}}}\n'
-with open(
-        OUTPUT_PATHS.get_tex_file_path(), 'w', encoding='utf-8') as tex_file:
-    tex_file.write(TEX_STR)
+tsu.save_to_tex_file(TEX_STR, OUTPUT_PATHS)

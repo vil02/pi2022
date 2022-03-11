@@ -1,3 +1,5 @@
+[![python_test](https://github.com/vil02/pi2022/actions/workflows/python_test.yml/badge.svg)](https://github.com/vil02/pi2022/actions/workflows/python_test.yml)
+
 Materiały do referatu _Problemy optymalizacyjne i symulowane wyżarzanie_ wygłoszonego podczas [XVI Święta Liczby &pi;](https://us.edu.pl/wydzial/wnst/wspolpraca/szkoly/swieto-liczby-pi/).
 
 Folder [`python`](./python) zawiera skrypty użyte do wygenerowania animacji oraz grafik użytych w prezentacji.

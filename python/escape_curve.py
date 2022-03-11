@@ -6,7 +6,7 @@ import numpy.linalg
 import extendable_curve
 
 
-def find_distance_to_boundary(pos_in, pos_out, convex_set, inter_limit):
+def find_distance_to_boundary(pos_in, pos_out, convex_set, iter_limit):
     """
     returns the distance between the pos_in and the boundary of the cinvex_set
     in direction of pos_out
@@ -24,7 +24,7 @@ def find_distance_to_boundary(pos_in, pos_out, convex_set, inter_limit):
         return (pos_a, pos_c) if pos_c not in convex_set else (pos_c, pos_b)
     tmp_a = copy.deepcopy(pos_in)
     tmp_b = copy.deepcopy(pos_out)
-    for _ in range(inter_limit):
+    for _ in range(iter_limit):
         tmp_a, tmp_b = single_iteration(tmp_a, tmp_b)
     res_pos = get_mid_point(tmp_a, tmp_b)
     return numpy.linalg.norm(res_pos-pos_in)
@@ -64,7 +64,7 @@ def get_curve_class(in_curve_class):
                 numpy.linalg.norm(self.point_list[-1]-self.point_list[-2]))
             assert len(self._dist_list) == len(self._point_list)
 
-        def get_max_len_inside(self, in_convex_set, inter_limit=10):
+        def get_max_len_inside(self, in_convex_set, iter_limit=10):
             """
             returns the length of the curve inside in_convex_set
             """
@@ -74,7 +74,7 @@ def get_curve_class(in_curve_class):
                 cur_ind += 1
             return self._dist_list[cur_ind-1] + \
                 find_distance_to_boundary(
-                    self[cur_ind-1], self[cur_ind], in_convex_set, inter_limit)
+                    self[cur_ind-1], self[cur_ind], in_convex_set, iter_limit)
     return Curve
 
 

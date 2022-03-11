@@ -53,6 +53,7 @@ rm -f ${pdf_file} ||
 }
 
 pdflatex -interaction=batchmode "$tex_file" || true
+bibtex $core_name || true
 pdflatex -interaction=batchmode "$tex_file" || true
 
 pdflatex -interaction=batchmode "$tex_file" ||

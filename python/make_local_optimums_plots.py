@@ -16,7 +16,6 @@ FIGURE_SAVER = fs.FigureSaver(OUTPUT_PATHS)
 
 def _init_figure():
     plt.close()
-    plt.gca().set_aspect('equal', adjustable='box')
     plt.axis('off')
 
 
@@ -26,7 +25,7 @@ GRAPH_COLOR = 'blue'
 _init_figure()
 plt.plot(
     X_DATA,
-    [0.3*(numpy.cos(3*_)+numpy.sin(6*_)+_**0.7+0.1*_) for _ in X_DATA],
+    [0.9*(numpy.cos(3*_)+numpy.sin(6*_)+_**0.7+0.1*_) for _ in X_DATA],
     color=GRAPH_COLOR)
 FIGURE_SAVER.save_fig()
 
@@ -34,7 +33,7 @@ FIGURE_SAVER.save_fig()
 def _second_fun(in_x):
     y_val = 0.8*numpy.cos(60*in_x+5) + \
         numpy.cos(15*in_x)+numpy.sin(17*in_x)+in_x**0.7+0.1*in_x
-    return 0.3*y_val
+    return 0.9*y_val
 
 
 _init_figure()

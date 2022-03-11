@@ -21,7 +21,8 @@ def test_rotation_matrix_has_determinant_1(cur_angle):
     checks if calculate_rotation_matrix_2d()
     returns a matrix with determinant 1
     """
-    assert numpy.linalg.det(rts.calculate_rotation_matrix_2d(cur_angle)) == 1
+    assert numpy.isclose(
+        numpy.linalg.det(rts.calculate_rotation_matrix_2d(cur_angle)), 1)
 
 
 @pytest.mark.parametrize("angle_a", numpy.linspace(0, 2*numpy.pi, _TEST_SIZE))

@@ -7,45 +7,20 @@
 \usepackage{xcolor}
 \usepackage{enumitem}
 \usefonttheme[onlymath]{serif}
-\newcommand*{\theorembreak}{\usebeamertemplate{theorem end}\framebreak\usebeamertemplate{theorem begin}}
 \usepackage[ddmmyyyy,hhmmss]{datetime}
 \renewcommand{\dateseparator}{.}
 \usepackage{animate}
-\usepackage{seqsplit}
 \usepackage{fontawesome}
 \usepackage{import}
 \usepackage{animate}
 \usepackage[noadjust]{cite}
 \usepackage{hyperref}
-\usepackage{etoolbox}
 \usepackage{mathtools}
-\patchcmd{\theorem}{Theorem}{Twierdzenie}{}{}
-%\patchcmd{\corollary}{Corollary}{Wniosek}{}{}
-\patchcmd{\lemma}{Lemma}{Lemat}{}{}
-%\patchcmd{\proposition}{Proposition}{Stwierdzenie}{}{}
-%\patchcmd{\axiom}{Axiom}{Aksjomat}{}{}
-\patchcmd{\example}{Example}{Przykład}{}{}
-\patchcmd{\definition}{Definition}{Definicja}{}{}
-%\patchcmd{\remark}{Remark}{Uwaga}{}{}
 
 \newcommand{\enumsymbol}{$\triangleright$}
 \newcommand{\enumsymbolsec}{$\circ$}
 
-
-\newcommand{\colora}[1]{{\color{red}{#1}}}
-
-\newcommand{\R}{\mathbb{R}}
-\newcommand{\Q}{\mathbb{Q}}
-\newcommand{\N}{\mathbb{N}}
-\newcommand{\Z}{\mathbb{Z}}
-
 \newcommand{\arctg}{\mathrm{arctg}}
-
-\renewcommand{\gcd}[2]{\mathtt{NWD}\paren{#1, #2}}
-
-\newcommand{\convto}[2]{\xrightarrow[#2]{#1}}
-\newcommand{\TODO}[1]{(\footnote{\texttt{TODO:} #1}!)}
-
 
 \newcommand{\myEmail}{vil02@o2.pl}
 \newcommand{\myLinkedinLink}{https://www.linkedin.com/in/piotr-idzik-34b572151/}
@@ -64,17 +39,10 @@
 \setbox2=\hbox{\vrule height\ht0 depth -\dimen0}%
 {\box0\lower0.4pt\box2}}
 
-\newcommand{\labelOnSlide}[2]{\label<#1>{#2}}
-\definecolor{colorOfDefinition}{RGB}{0, 70, 230}
-\newcommand{\define}[1]{\textcolor{colorOfDefinition}{\textit{#1}}}
 \newcommand{\paren}[1]{\!\left(#1 \right)}
-\newcommand{\abs}[1]{\left| #1 \right|}
 \newcommand{\email}[1]{\href{mailto: #1}{\texttt{#1}}}
 \newcommand{\link}[1]{\href{#1}{\texttt{#1}}}
-\newcommand{\goToProof}[1]{\hfill\hyperlink{#1}{\normalfont\faArrowCircleRight}}
 \renewcommand*\footnoterule{}
-
-\setbeamertemplate{theorems}[numbered]
 
 \input{paths_and_names.tex}
 
@@ -144,7 +112,7 @@ P = ab \pause \stackrel{\eqref{eq::formula_for_b}}{=} a\paren{1-a}
 \uncover<4->{w przeciwnym wypadku
 \[s \coloneqq s^\prime, \text{ z prawdopodobieństwem } P\paren{F(s), F\paren{s^\prime}, T}\]}
 \item<5-> $T \coloneqq \texttt{NowaTemperatura}\paren{T}$
-\item<6-> Idź do~\ref{item::new_state} o ile niespełnione kryterium stopu. 
+\item<6-> Idź do~\ref{item::new_state} o ile niespełnione kryterium stopu.
 \end{enumerate}
 \uncover<8->{$\texttt{NowaTemperatura}\paren{T} = \alpha T$, gdzie $\alpha \in (0, 1)$,}
 \uncover<9->{$P\paren{F(s), F\paren{s^\prime}, T} = e^{\frac{F\paren{s^\prime}-F\paren{s}}{kT}}$, gdzie $k>0$.}

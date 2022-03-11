@@ -18,6 +18,7 @@
 \usepackage[noadjust]{cite}
 \usepackage{hyperref}
 \usepackage{etoolbox}
+\usepackage{mathtools}
 \patchcmd{\theorem}{Theorem}{Twierdzenie}{}{}
 %\patchcmd{\corollary}{Corollary}{Wniosek}{}{}
 \patchcmd{\lemma}{Lemma}{Lemat}{}{}
@@ -131,6 +132,23 @@ P = ab \pause \stackrel{\eqref{eq::formula_for_b}}{=} a\paren{1-a}
 \section{Wyżarzanie}
 \subsection{Struktura krystaliczna metali}
 \subimport{\tmpDataFolder}{\crystalsExamplesTex}
+
+\section{Symulowane wyżarzanie}
+\begin{frame}
+\[\min_{s \in S}F\paren{s}\]
+\begin{enumerate}[label=\arabic*.]
+\item<7-> $T \coloneqq T_{\max}$, $s \coloneqq s_0$
+\item<2-> $s^\prime \coloneqq \texttt{NowyStan}\paren{s, T}$\label{item::new_state}
+\item<3-> Jeżeli $F\paren{s^\prime} < F\paren{s}$ to \
+\[s \coloneqq s^\prime\]
+\uncover<4->{w przeciwnym wypadku
+\[s \coloneqq s^\prime, \text{ z prawdopodobieństwem } P\paren{F(s), F\paren{s^\prime}, T}\]}
+\item<5-> $T \coloneqq \texttt{NowaTemperatura}\paren{T}$
+\item<6-> Idź do~\ref{item::new_state} o ile niespełnione kryterium stopu. 
+\end{enumerate}
+\uncover<8->{$\texttt{NowaTemperatura}\paren{T} = \alpha T$, gdzie $\alpha \in (0, 1)$,}
+\uncover<9->{$P\paren{F(s), F\paren{s^\prime}, T} = e^{\frac{F\paren{s^\prime}-F\paren{s}}{kT}}$, gdzie $k>0$.}
+\end{frame}
 
 \section{Ucieczka ze zbiorów wypukłych}
 

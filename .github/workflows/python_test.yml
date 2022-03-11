@@ -44,11 +44,11 @@ jobs:
       - name: Display flake8 version
         run: flake8 --version
 
-#      - name: Run linter
-#        shell: bash
-#        run: |
-#          cd python/
-#          ./check_all_python_scripts.sh
+      # - name: Run linter
+      #   shell: bash
+      #   run: |
+      #    cd python/
+      #    ./check_all_python_scripts.sh
 
       - name: Test with pytest
         run: |

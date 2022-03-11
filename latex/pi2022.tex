@@ -101,6 +101,30 @@
 \myGithub{}
 \hfill \textcolor[rgb]{0.85,0.85,0.85}{\texttt{\tiny{ver. \today\ \currenttime}}}
 \end{frame}
+\section{Problemy optymalizacyjne}
+\begin{frame}
+Jakie prostokąt o obwodzie 2 ma największe pole?
+\pause{}
+Jaka jest jego wartość?
+\pause{}
+\begin{equation} \label{eq::formula_for_b}
+2a+2b = 2 \pause \quad \Rightarrow \quad a+b = 1 \pause \quad \Rightarrow \quad b=1-a
+\end{equation}
+\pause{}
+\begin{equation*}
+P = ab \pause \stackrel{\eqref{eq::formula_for_b}}{=} a\paren{1-a}
+\end{equation*}
+\pause{}
+\begin{equation*}
+\max_{a \in [0, 1]} a\paren{1-a}
+\end{equation*}
+\pause{}
+\begin{figure}
+  \center{}
+  \subimport{\tmpDataFolder}{\rectangleAreaPlotTex}
+\end{figure}
+
+\end{frame}
 
 \section{Wyżarzanie}
 \subsection{Struktura krystaliczna metali}

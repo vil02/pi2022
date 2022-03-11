@@ -50,6 +50,7 @@ def get_angle_curve_data_representation(in_curve_class):
     class AngleCurveRepresentation:
         """allows to cast list of numbers into an AngleCurve"""
         def __init__(self, data_size, max_curve_len):
+            self._data_size = data_size
             self._segment_size = max_curve_len/data_size
             single_bound = (numpy.radians(-180), numpy.radians(180))
             self._bounds = [single_bound for _ in range(data_size)]
@@ -61,6 +62,7 @@ def get_angle_curve_data_representation(in_curve_class):
 
         def to_curve(self, in_angle_data):
             """returns an AngleCurve object for given data"""
+            assert len(in_angle_data) == self._data_size
             return in_curve_class(in_angle_data, self._segment_size)
 
     return AngleCurveRepresentation
@@ -77,6 +79,7 @@ def get_angle_curve_fixed_data_representation(in_curve_class):
         with first angle set to 0
         """
         def __init__(self, data_size, max_curve_len):
+            self._data_size = data_size
             self._segment_size = max_curve_len/(data_size+1)
             single_bound = (numpy.radians(-180), numpy.radians(180))
             self._bounds = [single_bound for _ in range(data_size)]
@@ -88,6 +91,7 @@ def get_angle_curve_fixed_data_representation(in_curve_class):
 
         def to_curve(self, in_angle_data):
             """returns an AngleCurve object for given data"""
+            assert len(in_angle_data) == self._data_size
             angle_list = numpy.insert(in_angle_data, 0, 0, axis=0)
             return in_curve_class(angle_list, self._segment_size)
 

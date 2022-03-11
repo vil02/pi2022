@@ -5,7 +5,6 @@
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{xcolor}
-\usepackage{enumitem}
 \usefonttheme[onlymath]{serif}
 \usepackage[ddmmyyyy,hhmmss]{datetime}
 \renewcommand{\dateseparator}{.}
@@ -104,7 +103,7 @@ P = ab \pause \stackrel{\eqref{eq::formula_for_b}}{=} a\paren{1-a}
 \section{Symulowane wyżarzanie}
 \begin{frame}
 \[\min_{s \in S}F\paren{s}\]
-\begin{enumerate}[label=\arabic*.]
+\begin{enumerate}
 \item<7-> $T \coloneqq T_{\max}$, $s \coloneqq s_0$
 \item<2-> $s^\prime \coloneqq \texttt{NowyStan}\paren{s, T}$\label{item::new_state}
 \item<3-> Jeżeli $F\paren{s^\prime} < F\paren{s}$ to \
@@ -317,6 +316,19 @@ gdzie
 \end{align*}
 \pause{}
 Wiktor Zalgaller, 1961, zob.~\cite{Finch2019b}
+\end{frame}
+
+\section{Podsumowanie}
+\begin{frame}
+Algorytm symulowanego wyżarzanie jest
+\begin{itemize}
+\item<+-> \textit{jedynie} algorytmem heurystycznym,
+\item<+-> prosty w implementacji i użyciu,
+\item<+-> powszechnie stosowany.
+\end{itemize}
+\uncover<+->{Reprezentacja danych jest istotna.}
+
+\uncover<+->{\vspace*{2cm} Prezentacja: \link{\myGithubLink pi2022/}}
 \end{frame}
 
 \section{Bibliografia}

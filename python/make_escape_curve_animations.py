@@ -98,7 +98,7 @@ def get_example_with_single_shape(data_representation):
         def plot_state(cls, in_data, curve_color):
             cur_curve = data_representation.to_curve(in_data)
             _init_figure()
-            cls.shape.plot(facecolor='lightgreen', edgecolor='green')
+            cls.shape.plot(**ps.CONVEX_COLORS)
             cls.plot_curve(
                 cur_curve, cls.evaluate_curve(cur_curve), curve_color)
             cls._set_limits()

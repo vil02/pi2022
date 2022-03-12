@@ -272,11 +272,11 @@ def get_halfplane_example(data_representation):
 
 
 def generate_animation_data(
-        optimiser, tex_propety_name, curve_color, anim_params, x0=None):
+        optimiser, tex_propety_name, anim_params, x0=None):
     cur_paths = op.OutputPaths(tex_propety_name)
     optimisation_data = optimiser.generate_data(x0)
     for (frame_number, cur_data) in enumerate(optimisation_data):
-        optimiser.plot_state(cur_data.data, curve_color)
+        optimiser.plot_state(cur_data.data, get_curve_color(tex_propety_name))
         plt.savefig(
             cur_paths.get_pdf_file_path(frame_number),
             bbox_inches='tight', pad_inches=0.01)
@@ -373,7 +373,6 @@ def make_single_shape_plots(
         data_dict[cur_tex_name] = generate_animation_data(
             cur_example,
             cur_tex_name,
-            get_curve_color(cur_tex_name),
             anim_params)
 
     create_comparison_conv_plot(data_dict, op.OutputPaths(conv_plot_tex_name))
@@ -383,7 +382,7 @@ def make_multiple_shapes_plots(
         in_example_class, tex_name, conv_plot_tex_name, x0=None):
     opt_data = generate_animation_data(
             in_example_class,
-            tex_name, get_curve_color(tex_name), None, x0)
+            tex_name, None, x0)
 
     conv_paths = op.OutputPaths(conv_plot_tex_name)
     _init_conv_plot()
@@ -425,7 +424,6 @@ def two_step_scheme(
     first_step_res = generate_animation_data(
         in_get_example_fun(in_first_step_representation),
         in_first_step_tex_name,
-        get_curve_color(in_first_step_tex_name),
         None, None)
 
     first_step_sol = \
@@ -440,7 +438,6 @@ def two_step_scheme(
     second_step_res = generate_animation_data(
         in_get_example_fun(second_step_representation),
         in_second_step_tex_name,
-        get_curve_color(in_second_step_tex_name),
         None, raw_first_step_opt)
     second_step_res = shift_second_step_time(first_step_res, second_step_res)
 

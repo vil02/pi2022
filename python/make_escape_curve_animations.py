@@ -221,7 +221,7 @@ def two_step_scheme(
     opt_res_dict[in_first_step_tex_name] = \
         odg.generate_multiple_shape_optimisation_data(
             in_first_step_representation, in_shape_list, 3,
-            {'maxiter': 130},
+            {'maxiter': 230},
             {'maxiter': 40})
 
     raw_first_step_opt, second_step_representation = \
@@ -308,7 +308,7 @@ def _get_data_for_strip(in_shift_num, in_rotation_num):
 
 def _get_data_for_halfplane(in_rotation_num):
     margin_size = 20
-    x_shift = -0.9
+    x_shift = -0.995
     initial_xy_data = numpy.array(
         [[-margin_size, margin_size], [margin_size, margin_size],
          [margin_size, x_shift], [-margin_size, x_shift]])

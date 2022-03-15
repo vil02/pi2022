@@ -1,6 +1,15 @@
 """contains TeX-string utilities"""
 
 
+def includegraphics_str(in_output_paths, in_num, in_width_ratio):
+    """
+    returns a TeX-string including a pdf file with given number
+    """
+    return \
+        f'\\includegraphics[width={in_width_ratio}\\textwidth]' \
+        f'{{{in_output_paths.get_short_pdf_path(in_num)}}}'
+
+
 def simple_overprint_frame(in_output_paths, in_num_limit, in_width_ratio):
     """
     returns a TeX-string representing a frame with simple overprint
@@ -12,9 +21,9 @@ def simple_overprint_frame(in_output_paths, in_num_limit, in_width_ratio):
 
     for _ in range(in_num_limit):
         tex_str += \
-            f'        \\onslide<{_+1}>\\centerline{{' \
-            f'\\includegraphics[width={in_width_ratio}\\textwidth]' \
-            f'{{{in_output_paths.get_short_pdf_path(_)}}}}}\n'
+            f'        \\onslide<{_+1}>\\centerline{{' + \
+            includegraphics_str(in_output_paths, _, in_width_ratio) + \
+            '}\n'
     tex_str += \
         '    \\end{overprint}\n' \
         '  \\end{center}\n' \

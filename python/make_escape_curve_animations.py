@@ -14,6 +14,7 @@ import tex_string_utils as tsu
 import evaluators as ev
 import output_paths as op
 import plotable_convex_shapes as pcs
+import rotations
 
 
 def _apply_dict(in_tex_name, in_dict):
@@ -101,7 +102,8 @@ def _create_conv_comparison_plot(
             color=get_curve_color(cur_tex_name),
             label=get_curve_name(cur_tex_name))
     output_paths = op.OutputPaths(in_conv_plot_tex_name)
-    plt.legend(loc="upper right")
+    if len(in_opt_data_dict) > 0:
+        plt.legend(loc="upper right")
     plt.xlabel('[s]')
     y_limits = plt.gca().get_ylim()
     plt.gca().set_ylim([y_limits[0], 2*y_limits[0]])
@@ -147,6 +149,77 @@ def make_single_shape_plots(
         opt_data_dict, evaluate_data_fun_dict, in_conv_plot_tex_name)
 
 
+def make_multiple_shape_plots(
+        in_shape_list,
+        in_data_representation_dict,
+        in_conv_plot_tex_name,
+        in_plot_limits):
+    """
+    generates all TeX data for the animations and convergence plot
+    for multiple shape problems
+    """
+
+    opt_data_dict = {}
+    for (cur_tex_name, cur_representation) in \
+            in_data_representation_dict.items():
+        opt_data_dict[cur_tex_name] = \
+            odg.generate_multiple_shape_optimisation_data(
+                cur_representation, in_shape_list, 3,
+                {'maxiter': 100},
+                {'maxiter': 40})
+
+    for (cur_tex_name, cur_opt_res) in opt_data_dict.items():
+        cur_data_representation = in_data_representation_dict[cur_tex_name]
+        cur_evaluate_fun = ev.get_multiple_shape_evaluator(
+            cur_data_representation, in_shape_list, 10).evaluate_curve_max
+        _create_optimisation_animation(
+            cur_tex_name, cur_opt_res,
+            cur_data_representation,
+            lambda: None,
+            cur_evaluate_fun,
+            plot_limits=in_plot_limits)
+
+    evaluate_data_fun_dict = {}
+    for (cur_tex_name, cur_representation) in \
+            in_data_representation_dict.items():
+        evaluate_data_fun_dict[cur_tex_name] = ev.get_multiple_shape_evaluator(
+            cur_representation, in_shape_list, 10).evaluate_data_max
+    _create_conv_comparison_plot(
+        opt_data_dict, evaluate_data_fun_dict, in_conv_plot_tex_name)
+
+
+class _Rectangle:
+    def __init__(self, in_xy_data):
+        self._xy_data = in_xy_data
+        self._patch_data = plt.Polygon(self._xy_data)
+
+    def __contains__(self, in_pos):
+        return self._patch_data.contains_point(in_pos)
+
+    def plot(self, **kwargs):
+        """plots the represented rectangle"""
+        plt.gca().add_patch(plt.Polygon(self._xy_data, **kwargs))
+
+
+def _get_data_for_strip(in_shift_num, in_rotation_num):
+    x_rad = 4
+    initial_xy_data = numpy.array(
+        [[-x_rad, 0.5], [x_rad, 0.5], [x_rad, -0.5], [-x_rad, -0.5]])
+    res_list = []
+    all_angles = numpy.linspace(
+        0, numpy.radians(180), in_rotation_num, endpoint=False)
+    for y_shift in numpy.linspace(-0.4995, 0.4995, in_shift_num):
+        cur_shift = numpy.array([0, y_shift])
+        for cur_rot in all_angles:
+            cur_xy = [
+                rotations.rotate_2d(_, cur_rot)+cur_shift
+                for _ in initial_xy_data]
+            cur_shape = _Rectangle(cur_xy)
+            assert numpy.array([0, 0]) in cur_shape
+            res_list.append(cur_shape)
+    return res_list
+
+
 PlotLimits = collections.namedtuple('PlotLimits', ['xlim', 'ylim'])
 
 
@@ -189,3 +262,9 @@ make_single_shape_plots(
         },
         'escapeFromRectangleConvPlotTex',
         _get_simple_limits(1.3))
+
+make_multiple_shape_plots(
+    _get_data_for_strip(30, 15),
+    {'escapeFromStripAzimuthTex': cr.AzimuthRepresentation(20, 2.5)},
+    'escapeFromStripConvPlotTex',
+    _get_simple_limits(1.7))

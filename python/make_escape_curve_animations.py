@@ -3,6 +3,7 @@ creates all TeX data for the escape curve optimisation animations
 """
 
 import collections
+import itertools
 import matplotlib.pyplot as plt
 import numpy
 
@@ -188,6 +189,91 @@ def make_multiple_shape_plots(
         opt_data_dict, evaluate_data_fun_dict, in_conv_plot_tex_name)
 
 
+def _get_initial_data_for_second_step(
+        in_first_step_representation, in_first_step_res):
+    first_step_sol = in_first_step_representation.to_curve(
+        in_first_step_res[-1].data)
+    raw_first_step_opt = list(itertools.chain(*first_step_sol.point_list[1:]))
+    pos_limit_min = 1.05*min(_ for _ in raw_first_step_opt)
+    pos_limit_max = 1.05*max(_ for _ in raw_first_step_opt)
+
+    second_step_representation = cr.PointCurveRepresentation(
+        len(raw_first_step_opt), pos_limit_min, pos_limit_max)
+    return raw_first_step_opt, second_step_representation
+
+
+def two_step_scheme(
+        in_shape_list,
+        in_first_step_representation,
+        in_first_step_tex_name, in_second_step_tex_name,
+        in_conv_plot_tex_name, **kwargs):
+    """runs the two-step-scheme"""
+
+    def shift_second_step_time(in_first_step_res, in_second_step_res):
+        res = []
+        first_step_end_time = in_first_step_res[-1].time
+        for _ in in_second_step_res:
+            res.append(odg.RowType(
+                _.data, _.time+first_step_end_time))
+        return res
+
+    opt_res_dict = {}
+    opt_res_dict[in_first_step_tex_name] = \
+        odg.generate_multiple_shape_optimisation_data(
+            in_first_step_representation, in_shape_list, 3,
+            {'maxiter': 130},
+            {'maxiter': 40})
+
+    raw_first_step_opt, second_step_representation = \
+        _get_initial_data_for_second_step(
+            in_first_step_representation, opt_res_dict[in_first_step_tex_name])
+
+    opt_res_dict[in_second_step_tex_name] = \
+        odg.generate_multiple_shape_optimisation_data(
+            second_step_representation, in_shape_list, 3,
+            {'maxiter': 60, 'x0': raw_first_step_opt, 'initial_temp': 10},
+            {'maxiter': 20, 'initial_temp': 10})
+    opt_res_dict[in_second_step_tex_name] = shift_second_step_time(
+        opt_res_dict[in_first_step_tex_name],
+        opt_res_dict[in_second_step_tex_name])
+
+    curve_eval_fun_dict = {
+        in_first_step_tex_name:
+            ev.get_multiple_shape_evaluator(
+                in_first_step_representation, in_shape_list,
+                10).evaluate_curve_max,
+        in_second_step_tex_name:
+            ev.get_multiple_shape_evaluator(
+                second_step_representation, in_shape_list,
+                10).evaluate_curve_max}
+
+    data_rep_dict = {
+        in_first_step_tex_name: in_first_step_representation,
+        in_second_step_tex_name: second_step_representation}
+
+    for (cur_tex_name, cur_opt_res) in opt_res_dict.items():
+        _create_optimisation_animation(
+            cur_tex_name, cur_opt_res,
+            data_rep_dict[cur_tex_name],
+            lambda: None,
+            curve_eval_fun_dict[cur_tex_name],
+            **kwargs)
+
+    _create_conv_comparison_plot(
+        opt_res_dict,
+        {
+            in_first_step_tex_name:
+                ev.get_multiple_shape_evaluator(
+                    in_first_step_representation, in_shape_list,
+                    10).evaluate_data_max,
+            in_second_step_tex_name:
+                ev.get_multiple_shape_evaluator(
+                    second_step_representation, in_shape_list,
+                    10).evaluate_data_max,
+        },
+        in_conv_plot_tex_name)
+
+
 class _Rectangle:
     def __init__(self, in_xy_data):
         self._xy_data = in_xy_data
@@ -217,6 +303,22 @@ def _get_data_for_strip(in_shift_num, in_rotation_num):
             cur_shape = _Rectangle(cur_xy)
             assert numpy.array([0, 0]) in cur_shape
             res_list.append(cur_shape)
+    return res_list
+
+
+def _get_data_for_halfplane(in_rotation_num):
+    margin_size = 20
+    x_shift = -0.9
+    initial_xy_data = numpy.array(
+        [[-margin_size, margin_size], [margin_size, margin_size],
+         [margin_size, x_shift], [-margin_size, x_shift]])
+    res_list = []
+    for cur_rot in numpy.linspace(
+            0, 2*numpy.pi, in_rotation_num, endpoint=False):
+        cur_xy = [rotations.rotate_2d(_, cur_rot) for _ in initial_xy_data]
+        cur_shape = _Rectangle(cur_xy)
+        assert numpy.array([0, 0]) in cur_shape
+        res_list.append(cur_shape)
     return res_list
 
 
@@ -268,3 +370,11 @@ make_multiple_shape_plots(
     {'escapeFromStripAzimuthTex': cr.AzimuthRepresentation(20, 2.5)},
     'escapeFromStripConvPlotTex',
     _get_simple_limits(1.7))
+
+two_step_scheme(
+    _get_data_for_halfplane(30),
+    cr.AzimuthRepresentation(20, 7),
+    'escapeFromHalfplaneAzimuthTex',
+    'escapeFromHalfplanePointTex',
+    'escapeFromHalfplaneConvPlotTex',
+    plot_limits=_get_simple_limits(2.25))

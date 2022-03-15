@@ -34,7 +34,7 @@ def _get_raw_shape():
 
 def _get_raw_convex_shape():
     points = _get_raw_shape()
-    convex_hull = scipy.spatial.ConvexHull(points)
+    convex_hull = scipy.spatial.ConvexHull(points)  # pylint: disable=no-member
     return points[convex_hull.vertices]
 
 

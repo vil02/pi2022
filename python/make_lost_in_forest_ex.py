@@ -29,6 +29,7 @@ def _get_raw_shape():
         [-3, 0.1], [-1.7, 1.6], [0.5, 1.1], [1, 0.9],
         [0.14, -0.9], [-1.2, -1.0], [-3, 0.1]]
     smooth_data = _smooth_data(raw_data)
+    # pylint: disable-next=no-member
     convex_hull = scipy.spatial.ConvexHull(smooth_data)
     return smooth_data[convex_hull.vertices]
 

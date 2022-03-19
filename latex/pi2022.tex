@@ -28,6 +28,8 @@
 \newcommand{\myLinkedin}{\href{\myLinkedinLink}{\faLinkedinSquare}}
 \newcommand{\myGithub}{\href{\myGithubLink}{\faGithubSquare}}
 
+\newcommand{\importFromTmpData}[1]{\subimport{\tmpDataFolder}{#1}}
+
 \renewcommand{\GenericWarning}[2]{\GenericError{#1}{#2}{}{This warning has been turned into a fatal error.}}
 
 \let\oldsqrt\sqrt{}
@@ -89,16 +91,16 @@ P = ab \pause \stackrel{\eqref{eq::formula_for_b}}{=} a\paren{1-a}
 \pause{}
 \begin{figure}
   \center{}
-  \subimport{\tmpDataFolder}{\rectangleAreaPlotTex}
+  \importFromTmpData{\rectangleAreaPlotTex}
 \end{figure}
 \end{frame}
 
 \subsection{Optima lokalne i globalne}
-\subimport{\tmpDataFolder}{\localOptimumsTex}
+\importFromTmpData{\localOptimumsTex}
 
 \section{Wyżarzanie}
 \subsection{Struktura krystaliczna metali}
-\subimport{\tmpDataFolder}{\crystalsExamplesTex}
+\importFromTmpData{\crystalsExamplesTex}
 
 \section{Symulowane wyżarzanie}
 \begin{frame}
@@ -122,44 +124,44 @@ P = ab \pause \stackrel{\eqref{eq::formula_for_b}}{=} a\paren{1-a}
 \begin{frame}
   \begin{figure}
     \center{}
-    \subimport{\tmpDataFolder}{\lostInForestExTex}
+    \importFromTmpData{\lostInForestExTex}
   \end{figure}
   \pause{}
   Richard E. Bellman, 1956,~\cite{Bellman1956} (zob.~\cite{Williams2000, FinchWetzel2004})
 \end{frame}
 
 \subsection{Zbiory wypukłe}
-\subimport{\tmpDataFolder}{\convexExamplesTex}
+\importFromTmpData{\convexExamplesTex}
 
 \subsection{Reprezentacja krzywej}
-\subimport{\tmpDataFolder}{\curveRepresentationExampleTex}
+\importFromTmpData{\curveRepresentationExampleTex}
 
 
 \begin{frame}
 \begin{columns}
   \begin{column}{0.5\textwidth}
     \begin{figure}
-      \subimport{\tmpDataFolder}{\curveComparisonLogoTex}
+      \importFromTmpData{\curveComparisonLogoTex}
     \end{figure}
   \end{column}
   \begin{column}{0.5\textwidth}
     \begin{figure}
-      \subimport{\tmpDataFolder}{\curveComparisonAzimuthTex}
+      \importFromTmpData{\curveComparisonAzimuthTex}
     \end{figure}
   \end{column}
 \end{columns}
 \end{frame}
 
 \subsection{Jak mierzyć długość krzywej wewnątrz zbioru?}
-\subimport{\tmpDataFolder}{\lengthInsideExampleTex}
+\importFromTmpData{\lengthInsideExampleTex}
 \subsection{Wypukłość jest istotna}
-\subimport{\tmpDataFolder}{\lengthInsideExampleNonconvexTex}
+\importFromTmpData{\lengthInsideExampleNonconvexTex}
 
 \section{Ucieczka z koła}
 
 \begin{frame}
 \begin{figure}
-  	\subimport{\tmpDataFolder}{\escapeFromCircleExTex}
+  	\importFromTmpData{\escapeFromCircleExTex}
 \end{figure}
 \end{frame}
 
@@ -167,12 +169,12 @@ P = ab \pause \stackrel{\eqref{eq::formula_for_b}}{=} a\paren{1-a}
 \begin{columns}
 \begin{column}{0.5\textwidth}
   \begin{figure}
-    	\subimport{\tmpDataFolder}{\escapeFromCircleLogoTex}
+    	\importFromTmpData{\escapeFromCircleLogoTex}
   \end{figure}
 \end{column}
 \begin{column}{0.5\textwidth}
   \begin{figure}
-    	\subimport{\tmpDataFolder}{\escapeFromCircleAzimuthTex}
+    	\importFromTmpData{\escapeFromCircleAzimuthTex}
   \end{figure}
 \end{column}
 \end{columns}
@@ -180,7 +182,7 @@ P = ab \pause \stackrel{\eqref{eq::formula_for_b}}{=} a\paren{1-a}
 
 \begin{frame}
 \begin{figure}
-  	\subimport{\tmpDataFolder}{\escapeFromCircleConvPlotTex}
+  	\importFromTmpData{\escapeFromCircleConvPlotTex}
 \end{figure}
 \end{frame}
 
@@ -188,12 +190,12 @@ P = ab \pause \stackrel{\eqref{eq::formula_for_b}}{=} a\paren{1-a}
 \begin{columns}
 \begin{column}{0.5\textwidth}
   \begin{figure}
-    	\subimport{\tmpDataFolder}{\escapeFromCircleLogoFixedTex}
+    	\importFromTmpData{\escapeFromCircleLogoFixedTex}
   \end{figure}
 \end{column}
 \begin{column}{0.5\textwidth}
   \begin{figure}
-    	\subimport{\tmpDataFolder}{\escapeFromCircleAzimuthFixedTex}
+    	\importFromTmpData{\escapeFromCircleAzimuthFixedTex}
   \end{figure}
 \end{column}
 \end{columns}
@@ -201,7 +203,7 @@ P = ab \pause \stackrel{\eqref{eq::formula_for_b}}{=} a\paren{1-a}
 
 \begin{frame}
 \begin{figure}
-  	\subimport{\tmpDataFolder}{\escapeFromCircleConvPlotFixedTex}
+  	\importFromTmpData{\escapeFromCircleConvPlotFixedTex}
 \end{figure}
 \end{frame}
 
@@ -209,7 +211,7 @@ P = ab \pause \stackrel{\eqref{eq::formula_for_b}}{=} a\paren{1-a}
 
 \begin{frame}
 \begin{figure}
-  	\subimport{\tmpDataFolder}{\escapeFromRectangleExTex}
+  	\importFromTmpData{\escapeFromRectangleExTex}
 \end{figure}
 \end{frame}
 
@@ -217,12 +219,12 @@ P = ab \pause \stackrel{\eqref{eq::formula_for_b}}{=} a\paren{1-a}
 \begin{columns}
 \begin{column}{0.5\textwidth}
   \begin{figure}
-    	\subimport{\tmpDataFolder}{\escapeFromRectangleLogoTex}
+    	\importFromTmpData{\escapeFromRectangleLogoTex}
   \end{figure}
 \end{column}
 \begin{column}{0.5\textwidth}
   \begin{figure}
-    	\subimport{\tmpDataFolder}{\escapeFromRectangleAzimuthTex}
+    	\importFromTmpData{\escapeFromRectangleAzimuthTex}
   \end{figure}
 \end{column}
 \end{columns}
@@ -230,13 +232,13 @@ P = ab \pause \stackrel{\eqref{eq::formula_for_b}}{=} a\paren{1-a}
 
 \begin{frame}
 \begin{figure}
-  	\subimport{\tmpDataFolder}{\escapeFromRectangleConvPlotTex}
+  	\importFromTmpData{\escapeFromRectangleConvPlotTex}
 \end{figure}
 \end{frame}
 
 \section{Ucieczka z półpłaszczyzny}
 
-\subimport{\tmpDataFolder}{\escapeFromHalfplaneExTex}
+\importFromTmpData{\escapeFromHalfplaneExTex}
 
 \subsection{Funkcja kosztu}
 
@@ -259,19 +261,19 @@ P = ab \pause \stackrel{\eqref{eq::formula_for_b}}{=} a\paren{1-a}
 
 \begin{frame}
   \begin{figure}
-    	\subimport{\tmpDataFolder}{\escapeFromHalfplaneAzimuthTex}
+    	\importFromTmpData{\escapeFromHalfplaneAzimuthTex}
   \end{figure}
 \end{frame}
 
 \begin{frame}
   \begin{figure}
-    	\subimport{\tmpDataFolder}{\escapeFromHalfplanePointTex}
+    	\importFromTmpData{\escapeFromHalfplanePointTex}
   \end{figure}
 \end{frame}
 
 \begin{frame}
   \begin{figure}
-    	\subimport{\tmpDataFolder}{\escapeFromHalfplaneConvPlotTex}
+    	\importFromTmpData{\escapeFromHalfplaneConvPlotTex}
   \end{figure}
 \end{frame}
 
@@ -287,19 +289,19 @@ John R. Isbell, 1956~\cite{Isbell1957} oraz Henri Joris, 1980~\cite{Joris1980, F
 
 \section{Ucieczka z \textit{paska}}
 
-\subimport{\tmpDataFolder}{\escapeFromStripExTex}
+\importFromTmpData{\escapeFromStripExTex}
 
 \subsection{Wyniki eksperymentów}
 
 \begin{frame}
   \begin{figure}
-    	\subimport{\tmpDataFolder}{\escapeFromStripAzimuthTex}
+    	\importFromTmpData{\escapeFromStripAzimuthTex}
   \end{figure}
 \end{frame}
 
 \begin{frame}
   \begin{figure}
-    	\subimport{\tmpDataFolder}{\escapeFromStripConvPlotTex}
+    	\importFromTmpData{\escapeFromStripConvPlotTex}
   \end{figure}
 \end{frame}
 

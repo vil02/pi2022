@@ -43,13 +43,17 @@ def read_paths_and_names():
             assert key_str not in res
             assert value_str not in res.values()
             res[key_str] = value_str
+
+    def proc_value_str(in_key_str, in_value_str):
+        res = in_value_str
+        if in_key_str.endswith('Folder'):
+            res = latex_folder/pathlib.Path(res)
+        return res
+
     with open(config_file_path, encoding='utf-8') as config_file:
         for _ in config_file.readlines():
             proc_single_line(_)
-    for _ in res:
-        if _.endswith('Folder'):
-            res[_] = latex_folder/pathlib.Path(res[_])
-
+    res = {key: proc_value_str(key, value) for key, value in res.items()}
     tex_names = [key for key in res if key.endswith('Tex')]
     assert len(tex_names) == len({res[_] for _ in tex_names})
 

@@ -1,5 +1,6 @@
 [![python_test](https://github.com/vil02/pi2022/actions/workflows/python_test.yml/badge.svg)](https://github.com/vil02/pi2022/actions/workflows/python_test.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=vil02_pi2022&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=vil02_pi2022)
+[![CodeFactor](https://www.codefactor.io/repository/github/vil02/pi2022/badge)](https://www.codefactor.io/repository/github/vil02/pi2022)
 
 Materiały do referatu _Problemy optymalizacyjne i symulowane wyżarzanie_ wygłoszonego podczas [XVI Święta Liczby &pi;](https://us.edu.pl/wydzial/wnst/wspolpraca/szkoly/swieto-liczby-pi/).
 Prezentacja jest dostępna [tutaj](./generated/pi2022.pdf) ([pobierz](https://raw.githubusercontent.com/vil02/pi2022/master/generated/pi2022.pdf)).

@@ -36,6 +36,13 @@ jobs:
           coverage xml --omit="*/test_*"
           coverage report --omit="*/test_*"
 
+      - name: Fix code coverage paths for SonarCloud
+        # yamllint disable rule:line-length
+        run: |
+          cp coverage.xml coverage_for_sonacloud.xml
+          sed -i 's/\/home\/runner\/work\/pi2022\/pi2022/\/github\/workspace/g' coverage_for_sonacloud.xml
+        # yamllint enable rule:line-length
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:

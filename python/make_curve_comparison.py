@@ -41,8 +41,8 @@ def _perturbe_angle_list(in_angle_list, in_perturbation):
 
 def _find_limits(in_curve_class_list, angle_list, perturbation_list):
     def update_limits(cur_limits, val_list):
-        cur_limits[0] = min(cur_limits[0], min(val_list))
-        cur_limits[1] = max(cur_limits[1], max(val_list))
+        cur_limits[0] = min(cur_limits[0], *val_list)
+        cur_limits[1] = max(cur_limits[1], *val_list)
 
     def add_margin(cur_limits):
         margin_size = 0.3

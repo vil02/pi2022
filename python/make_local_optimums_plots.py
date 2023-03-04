@@ -51,7 +51,9 @@ CUR_AX = mpl_toolkits.mplot3d.Axes3D(plt.gcf())
 plt.axis('off')
 CUR_AX.plot_surface(
     X_MESH, Y_MESH, Z_VALS,
-    cmap=matplotlib.cm.coolwarm, antialiased=True, linewidth=0,
+    # pylint: disable-next=no-member
+    cmap=matplotlib.cm.coolwarm,
+    antialiased=True, linewidth=0,
     rcount=100,
     ccount=100)
 

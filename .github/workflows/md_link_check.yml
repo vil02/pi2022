@@ -1,8 +1,7 @@
 ---
 name: Check Markdown links
 
-# yamllint disable-line rule:truthy
-on: [workflow_dispatch, push]
+'on': [workflow_dispatch, push]
 
 jobs:
   markdown-link-check:

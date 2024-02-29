@@ -1,8 +1,7 @@
 ---
 name: build_document
 
-# yamllint disable-line rule:truthy
-on:
+'on':
   workflow_dispatch:
   push:
     paths-ignore:

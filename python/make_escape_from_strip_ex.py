@@ -82,6 +82,7 @@ FIGURE_SAVER.save_fig(X_LIM, Y_LIM)
 
 _init_figure()
 TOTAL_SIZE = len(POS_LIST)*len(ANGLE_LIST)
+# pylint: disable-next=no-member
 COLOR_LIST = [plt.cm.get_cmap('hsv', TOTAL_SIZE)(_) for _ in range(TOTAL_SIZE)]
 for (_, cur_color) in zip(itertools.product(POS_LIST, ANGLE_LIST), COLOR_LIST):
     cur_y_pos, cur_angle = _

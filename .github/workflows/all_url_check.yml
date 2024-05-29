@@ -5,7 +5,7 @@ name: all_url_check
   workflow_dispatch:
   push:
   schedule:
-    - cron: '30 */3 * * *'
+    - cron: '35 2 * * *'
 
 jobs:
   run_lychee:

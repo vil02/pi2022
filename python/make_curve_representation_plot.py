@@ -181,12 +181,11 @@ MAX_NUM = 4
 
 
 for _ in range(MAX_NUM):
-    cur_str = \
+    TEX_STR += \
         f'        \\onslide<{_to_on_slide_num(_+1, MAX_NUM)}>' \
         r'\centerline{\includegraphics[width=0.9\textwidth]{' \
         f'{_get_output_paths().get_short_pdf_path(_)}' \
         '}}\n'
-    TEX_STR += cur_str
 TEX_STR += \
     '    \\end{overprint}\n' \
     '  \\end{center}\n'

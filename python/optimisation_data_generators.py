@@ -16,7 +16,6 @@ def _append_res_data(cur_data, in_opt_res, in_start_time):
 
 def _get_callback_fun(cur_data, in_start_time):
     def callback_fun(in_data, _function_value, _context):
-        nonlocal cur_data
         cur_data.append(RowType(in_data, time.time()-in_start_time))
     return callback_fun
 

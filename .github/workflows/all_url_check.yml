@@ -7,6 +7,9 @@ name: all_url_check
   schedule:
     - cron: '35 2 * * *'
 
+permissions:
+  contents: read
+
 jobs:
   run_lychee:
     runs-on: ubuntu-latest

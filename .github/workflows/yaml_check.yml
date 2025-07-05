@@ -3,6 +3,9 @@ name: yaml_check
 
 'on': [workflow_dispatch, push]
 
+permissions:
+  contents: read
+
 jobs:
   run_yamllint:
     runs-on: ubuntu-latest

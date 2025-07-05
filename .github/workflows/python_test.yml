@@ -9,6 +9,9 @@ name: python_test
   schedule:
     - cron: '30 12 * * 4'
 
+permissions:
+  contents: read
+
 jobs:
   python_test:
     runs-on: ${{matrix.os}}

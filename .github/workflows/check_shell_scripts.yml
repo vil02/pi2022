@@ -5,6 +5,9 @@ name: check_shell_scripts
   workflow_dispatch:
   push:
 
+permissions:
+  contents: read
+
 jobs:
   run_shellcheck:
     runs-on: ubuntu-latest

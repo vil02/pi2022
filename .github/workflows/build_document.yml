@@ -7,6 +7,9 @@ name: build_document
     paths-ignore:
       - 'generated/**'
 
+permissions:
+  contents: read
+
 env:
   python_version: 3.8
 

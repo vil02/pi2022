@@ -8,6 +8,9 @@ name: sonarcloud_check
       - master
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   sonarcloud:
     name: SonarCloud

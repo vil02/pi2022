@@ -7,6 +7,9 @@ name: latex_linter_check
     paths-ignore:
       - 'generated/**'
 
+permissions:
+  contents: read
+
 jobs:
   run_chktex:
     runs-on: ubuntu-latest

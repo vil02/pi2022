@@ -8,6 +8,9 @@ name: pdf_check
       - 'generated/**'
       - '.github/workflows/qpdf_check.yml'
 
+permissions:
+  contents: read
+
 jobs:
   run_qpdf:
     runs-on: ubuntu-latest

@@ -16,8 +16,8 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
       - name: LaTeX linter
-        uses: colinaaa/chktex-action@v1.1.2
+        uses: colinaaa/chktex-action@5dda098b973d69cdc61ace93fa7bfcef39efaade # v1.1.2
 ...

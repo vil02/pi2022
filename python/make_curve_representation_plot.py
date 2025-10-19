@@ -172,7 +172,7 @@ def _to_on_slide_num(in_num, max_num):
     return res
 
 
-TEX_STR = \
+_tex_str = \
     '\\begin{frame}\n' \
     '  \\begin{center}\n' \
     '    \\begin{overprint}\n'
@@ -181,12 +181,12 @@ MAX_NUM = 4
 
 
 for _ in range(MAX_NUM):
-    TEX_STR += \
+    _tex_str += \
         f'        \\onslide<{_to_on_slide_num(_+1, MAX_NUM)}>' \
         r'\centerline{\includegraphics[width=0.9\textwidth]{' \
         f'{_get_output_paths().get_short_pdf_path(_)}' \
         '}}\n'
-TEX_STR += \
+_tex_str += \
     '    \\end{overprint}\n' \
     '  \\end{center}\n'
 
@@ -197,14 +197,14 @@ def _angle_list_to_tex_str(in_angle_deg_list):
         '\\right)$$'
 
 
-TEX_STR += '  \\begin{overprint}\n'
-TEX_STR += '    \\onslide<3>\n    ' + \
+_tex_str += '  \\begin{overprint}\n'
+_tex_str += '    \\onslide<3>\n    ' + \
     _angle_list_to_tex_str(ANGLE_DEG_LIST)+'\n'
-TEX_STR += '   \\onslide<4>\n    ' + \
+_tex_str += '   \\onslide<4>\n    ' + \
     _angle_list_to_tex_str(
         curve.logo_agnles_to_azimuth_angles(ANGLE_DEG_LIST))+'\n'
-TEX_STR += '  \\end{overprint}\n'
+_tex_str += '  \\end{overprint}\n'
 
-TEX_STR += '\\end{frame}\n'
+_tex_str += '\\end{frame}\n'
 
-tsu.save_to_tex_file(TEX_STR, _get_output_paths())
+tsu.save_to_tex_file(_tex_str, _get_output_paths())

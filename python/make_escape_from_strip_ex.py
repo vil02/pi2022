@@ -70,8 +70,7 @@ for _ in POS_LIST:
     _mark_pos(_)
 FIGURE_SAVER.save_fig(X_LIM, Y_LIM)
 
-ANGLE_LIST = numpy.linspace(0, 2*numpy.pi, 6, False)
-_mark_all_start_positions(POS_LIST, ANGLE_LIST)
+_mark_all_start_positions(POS_LIST, numpy.linspace(0, 2*numpy.pi, 6, False))
 FIGURE_SAVER.save_fig(X_LIM, Y_LIM)
 
 ANGLE_LIST = numpy.linspace(0, numpy.pi, 3, False)

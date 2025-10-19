@@ -240,10 +240,10 @@ for frame_num in range(2, FRAME_LIMIT):
     _call_save_fig(frame_num)
     plt.close()
 
-TEX_STR = ''
+_tex_str = ''
 for _ in range(2):
     cur_file = _get_output_paths().get_short_pdf_path(_)
-    TEX_STR += \
+    _tex_str += \
         '\\begin{frame}\n' + \
         '  \\begin{center}\n' + \
         f'    \\includegraphics{{{cur_file}}}\n' \
@@ -254,11 +254,11 @@ for _ in range(2):
 ANIM_STR = tsu.animategraphics_str(
     _get_output_paths(), 15, 'autoplay,loop', 2, FRAME_LIMIT-1)
 
-TEX_STR += \
+_tex_str += \
     '\\begin{frame}\n' + \
     '  \\begin{center}\n' + \
     '    ' + ANIM_STR + '\n' + \
     '  \\end{center}\n' \
     '\\end{frame}\n'
 
-tsu.save_to_tex_file(TEX_STR, _get_output_paths())
+tsu.save_to_tex_file(_tex_str, _get_output_paths())

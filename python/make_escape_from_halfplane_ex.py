@@ -54,9 +54,9 @@ FIGURE_SAVER.save_fig(X_LIM, Y_LIM)
 ANGLE_LIST = numpy.linspace(0, 2*numpy.pi, 5, False)
 
 for _ in ANGLE_LIST:
-    ARROW_LEN = 1.7
-    cur_x = ARROW_LEN*numpy.cos(_)
-    cur_y = ARROW_LEN*numpy.sin(_)
+    _arrow_len = 1.7
+    cur_x = _arrow_len*numpy.cos(_)
+    cur_y = _arrow_len*numpy.sin(_)
     plt.arrow(0, 0, cur_x, cur_y, overhang=0.3, head_width=0.5, color='black')
 FIGURE_SAVER.save_fig(X_LIM, Y_LIM)
 

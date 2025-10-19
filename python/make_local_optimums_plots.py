@@ -19,13 +19,13 @@ def _init_figure():
     plt.axis('off')
 
 
-X_DATA = numpy.linspace(0, 3, 700)
+X_DATA_0 = numpy.linspace(0, 3, 700)
 GRAPH_COLOR = 'blue'
 
 _init_figure()
 plt.plot(
-    X_DATA,
-    [0.9*(numpy.cos(3*_)+numpy.sin(6*_)+_**0.7+0.1*_) for _ in X_DATA],
+    X_DATA_0,
+    [0.9*(numpy.cos(3*_)+numpy.sin(6*_)+_**0.7+0.1*_) for _ in X_DATA_0],
     color=GRAPH_COLOR)
 FIGURE_SAVER.save_fig()
 
@@ -37,7 +37,7 @@ def _second_fun(in_x):
 
 
 _init_figure()
-plt.plot(X_DATA, [_second_fun(_) for _ in X_DATA], color=GRAPH_COLOR)
+plt.plot(X_DATA_0, [_second_fun(_) for _ in X_DATA_0], color=GRAPH_COLOR)
 FIGURE_SAVER.save_fig()
 plt.close()
 
